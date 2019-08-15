@@ -21,35 +21,6 @@
 
     <LinearLayout
         android:visibility="gone"
-        android:id="@+id/ll_tips"
-        android:orientation="vertical"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/face_view"
-        android:layout_width="860dp"
-        android:layout_height="wrap_content">
-        <!--识别成功 XXX 欢迎光临-->
-        <TextSwitcher
-            android:inAnimation="@anim/text_in"
-            android:outAnimation="@anim/text_out"
-            android:id="@+id/ts_sign_tips"
-            android:letterSpacing="0.2"
-            android:paddingTop="20dp"
-            android:gravity="center_horizontal"
-            android:textColor="@color/white"
-            android:textSize="46dp"
-            android:text="欢迎XXX领导第X次莅临指导"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <View
-            android:background="@mipmap/tips_bottom_line"
-            android:layout_width="match_parent"
-            android:layout_height="10dp"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:visibility="gone"
         android:paddingTop="20dp"
         android:paddingLeft="20dp"
         android:orientation="horizontal"
@@ -81,156 +52,55 @@
 
     <LinearLayout
         android:visibility="gone"
-        android:gravity="center_horizontal"
-        android:background="@drawable/shape_weather_corners"
-        android:layout_marginRight="40dp"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_width="380dp"
-        android:layout_height="760dp"
-        android:orientation="vertical">
+        android:translationY="500dp"
+        android:id="@+id/ll_main_tips"
+        android:padding="30dp"
+        android:orientation="horizontal"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@mipmap/bg_tips"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="500dp">
+        <FrameLayout
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
 
-        <TextClock
-            android:letterSpacing="0.1"
-            android:text="10:00"
-            android:id="@+id/time"
-            android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:format12Hour="HH:mm"
-            android:format24Hour="HH:mm"
-            android:textColor="@color/white"
-            android:textSize="100dp" />
-
-        <TextClock
-            android:letterSpacing="0.1"
-            android:id="@+id/tc_date"
-            android:text="2019/09/11   周三"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:format12Hour="yyyy/MM/dd   EE"
-            android:format24Hour="yyyy/MM/dd   EE"
-            android:textColor="@color/white"
-            android:textSize="30dp" />
-
-        <View
-            android:layout_marginTop="20dp"
-            android:layout_below="@+id/tc_date"
-            android:background="#535353"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"/>
-
-        <TextView
-            android:layout_marginTop="10dp"
-            android:padding="8dp"
-            android:textSize="28dp"
-            android:textColor="@color/white"
-            android:text="室内空气质量"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_head_tips"
+                android:src="@mipmap/bg_face_frame"
+                android:layout_gravity="center"
+                android:layout_width="300dp"
+                android:layout_height="300dp"/>
+        </FrameLayout>
 
         <LinearLayout
-            android:paddingBottom="20dp"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_weight="3"
+            android:layout_width="0dp"
             android:layout_height="match_parent">
-            <LinearLayout
-                android:paddingLeft="60dp"
-                android:orientation="vertical"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent">
 
-                <TextView
-                    style="@style/main_air_text"
-                    android:text="温度" />
+            <TextView
+                android:id="@+id/tv_name_main_tips"
+                android:padding="20dp"
+                android:textColor="@color/white"
+                android:textSize="44dp"
+                android:text="正在检测..."
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-                <TextView
-                    style="@style/main_air_text"
-                    android:text="湿度" />
-
-                <TextView
-                    style="@style/main_air_text"
-                    android:text="PM2.5" />
-
-                <TextView
-                    style="@style/main_air_text"
-                    android:text="CO2" />
-
-                <TextView
-                    style="@style/main_air_text"
-                    android:text="VOC" />
-
-                <TextView
-                    style="@style/main_air_text"
-                    android:text="甲醛" />
-
-                <TextView
-                    style="@style/main_air_text"
-                    android:text="空气质量" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/tv_main_temperature"
-                    style="@style/main_air_text"
-                    android:text="@string/main_air_no_data" />
-
-                <TextView
-                    android:id="@+id/tv_main_wetness"
-                    style="@style/main_air_text"
-                    android:text="@string/main_air_no_data" />
-
-                <TextView
-                    android:id="@+id/tv_main_pm2.5"
-                    style="@style/main_air_text"
-                    android:text="@string/main_air_no_data" />
-
-                <TextView
-                    android:id="@+id/tv_main_co2"
-                    style="@style/main_air_text"
-                    android:text="@string/main_air_no_data" />
-
-                <TextView
-                    android:id="@+id/tv_main_voc"
-                    style="@style/main_air_text"
-                    android:text="@string/main_air_no_data" />
-
-                <TextView
-                    android:id="@+id/tv_main_hcho"
-                    style="@style/main_air_text"
-                    android:text="@string/main_air_no_data" />
-
-                <TextView
-                    android:id="@+id/tv_main_quality"
-                    style="@style/main_air_text"
-                    android:text="@string/main_air_no_data" />
-            </LinearLayout>
-
+            <TextView
+                android:id="@+id/tv_main_tips"
+                android:padding="20dp"
+                android:text="识别成功，请通过"
+                android:textColor="#00ff00"
+                android:textSize="50dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
+
     </LinearLayout>
-
-    <ImageView
-        android:visibility="gone"
-        android:layout_centerVertical="true"
-        android:id="@+id/iv_main_left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingLeft="10dp"
-        android:paddingTop="50dp"
-        android:paddingRight="5dp"
-        android:paddingBottom="50dp"
-        android:src="@mipmap/icon_btn_introduce_left" />
-
 
 </RelativeLayout>

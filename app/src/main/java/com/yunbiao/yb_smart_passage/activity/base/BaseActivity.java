@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Looper;
+import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -71,6 +72,10 @@ public abstract class BaseActivity extends FragmentActivity {
         initView();
 
         initData();
+    }
+
+    protected <T extends View> T find(@IdRes int id){
+        return findViewById(id);
     }
 
     protected void replaceFragment(int id, Fragment fragment){

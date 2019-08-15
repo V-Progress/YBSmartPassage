@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 
 import com.yunbiao.yb_smart_passage.activity.base.BaseActivity;
 import com.yunbiao.yb_smart_passage.activity.WelComeActivity;
@@ -25,6 +29,7 @@ public class SplashActivity extends BaseActivity {
             ,android.Manifest.permission.CAMERA
             /*,Manifest.permission.SYSTEM_ALERT_WINDOW*/};
     private YBPermission ybPermission;
+    private View ivBg;
 
     @Override
     protected int getPortraitLayout() {
@@ -34,6 +39,11 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected int getLandscapeLayout() {
         return R.layout.activity_splash;
+    }
+
+    @Override
+    protected void initView() {
+        ivBg = findViewById(R.id.iv_bg);
     }
 
     @Override
@@ -58,7 +68,6 @@ public class SplashActivity extends BaseActivity {
                     startActivity(new Intent(SplashActivity.this, WelComeActivity.class));
                     overridePendingTransition(0,0);
                     finish();
-                    return;
                 } else {
                     UIUtils.showTitleTip(SplashActivity.this,"权限申请失败");
                 }

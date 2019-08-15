@@ -275,6 +275,10 @@ public class PassageManager {
         passageBean.setSimilar(verifyResult.getCheckScore()+"");
         passageBean.setDepartName(userBean.getDepartName());
 
+        File imgFile = saveBitmap(currTime, faceImageBytes);
+        d("签到成功... " + imgFile.getPath());
+        passageBean.setHeadPath(imgFile.getPath());
+
         d("签到成功... " + passageBean.getName());
         if (listener != null) {
             mAct.runOnUiThread(new Runnable() {
@@ -285,9 +289,6 @@ public class PassageManager {
             });
         }
 
-        File imgFile = saveBitmap(currTime, faceImageBytes);
-        d("签到成功... " + imgFile.getPath());
-        passageBean.setHeadPath(imgFile.getPath());
         sendSignRecord(passageBean);
     }
 
