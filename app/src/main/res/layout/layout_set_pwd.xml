@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="500dp"
+    android:layout_height="360dp"
+    android:background="@android:color/transparent"
+    android:padding="10dp"
+    android:orientation="vertical">
+
+    <View
+        android:layout_margin="6dp"
+        android:background="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <ImageView
+        android:background="@mipmap/bg_dialog_input"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:padding="10dp"
+        android:text="修改管理密码"
+        android:textSize="24dp"
+        android:textColor="#86F8FE"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@+id/tv_title"
+        android:digits="0123456789abcdefghijklmnopqrstuvwxyz"
+        android:inputType="textPassword"
+        android:id="@+id/edt_set_pwd"
+        android:layout_marginTop="25dp"
+        android:maxLength="12"
+        android:maxLines="1"
+        android:textColorHint="@color/white"
+        android:textColor="@color/white"
+        android:padding="15dp"
+        android:hint="请输入新密码"
+        android:textSize="20dp"
+        android:background="@drawable/line_net_edt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@+id/edt_set_pwd"
+        android:digits="0123456789abcdefghijklmnopqrstuvwxyz"
+        android:inputType="textPassword"
+        android:id="@+id/edt_set_pwd_again"
+        android:layout_marginTop="20dp"
+        android:maxLength="12"
+        android:maxLines="1"
+        android:textColorHint="@color/white"
+        android:textColor="@color/white"
+        android:padding="15dp"
+        android:hint="请再次输入"
+        android:textSize="20dp"
+        android:background="@drawable/line_net_edt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:paddingTop="20dp"
+        android:gravity="center"
+        android:layout_below="@+id/edt_set_pwd_again"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:id="@+id/btn_pwd_cancel"
+            android:layout_marginRight="80dp"
+            android:textColor="#86F8FE"
+            android:background="@drawable/shape_system_name"
+            android:text="返回"
+            android:textSize="22dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:textColor="#86F8FE"
+            android:id="@+id/btn_pwd_confirm"
+            android:background="@drawable/shape_system_name"
+            android:text="确定"
+            android:textSize="22dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</RelativeLayout>

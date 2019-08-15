@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/rl_root"
+    android:background="@mipmap/bg_page">
+
+    <LinearLayout
+        android:paddingLeft="55dp"
+        android:paddingRight="55dp"
+        android:paddingBottom="30dp"
+        android:orientation="vertical"
+        android:paddingTop="140dp"
+        android:layout_centerInParent="true"
+        android:background="@mipmap/bg_employ_list_light"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:paddingTop="50dp"
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_marginTop="30dp"
+                android:gravity="left"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+                <Button
+                    android:paddingRight="15dp"
+                    android:id="@+id/btn_addEmploy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_employ_button"
+                    android:layout_marginRight="10dp"
+                    android:drawableLeft="@mipmap/icon_add"
+                    android:paddingLeft="18dp"
+                    android:text="新增员工"
+                    android:textColor="#64DCFE"
+                    android:textSize="20dp" />
+
+                <Button
+                    android:layout_toRightOf="@+id/btn_addEmploy"
+                    android:id="@+id/btn_sync"
+                    android:layout_width="108dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_bg_btnsync"
+                    android:drawableLeft="@mipmap/icon_sync"
+                    android:paddingLeft="20dp"
+                    android:text="@string/employ_list_depart_sync"
+                    android:textColor="@color/white"
+                    android:textSize="20dp"
+                    android:visibility="visible"/>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_weight="1"
+                android:layout_centerHorizontal="true"
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_centerInParent="true"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:background="@drawable/shape_system_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="38dp"
+                    android:textColor="@color/white"
+                    android:text="@string/employ_list_title"/>
+            </RelativeLayout>
+
+            <FrameLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_gravity="right"
+                    android:id="@+id/iv_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:src="@mipmap/icon_back"/>
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:padding="5dp"
+            android:layout_marginTop="15dp"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical"
+            android:background="@drawable/shape_system_name"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/rl_employ_top"
+            android:layout_width="1300dp"
+            android:layout_height="600dp">
+
+            <LinearLayout
+                android:id="@+id/layout_title"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:background="@drawable/shape_employ_list"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:textColor="@color/white"
+                    android:textSize="20dp"
+                    android:text="@string/employ_list_field_index"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:textColor="@color/white"
+                    android:textSize="20dp"
+                    android:text="@string/employ_list_field_number"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:textColor="@color/white"
+                    android:textSize="20dp"
+                    android:text="@string/employ_list_field_name"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:textColor="@color/white"
+                    android:textSize="20dp"
+                    android:text="@string/employ_list_field_position"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:textColor="@color/white"
+                    android:textSize="20dp"
+                    android:text="@string/employ_list_field_control"
+                    android:gravity="center"/>
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_below="@+id/layout_title"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ListView
+                    android:id="@+id/lv_employ_List"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+                <com.wang.avi.AVLoadingIndicatorView
+                    android:id="@+id/avl_loading"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </FrameLayout>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

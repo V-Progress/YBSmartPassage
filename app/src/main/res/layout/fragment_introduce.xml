@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fl_info"
+    android:padding="2dp"
+    android:background="@color/black"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/fl_intro"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <WebView
+            android:background="@color/black"
+            android:id="@+id/wv_web"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <com.yunbiao.yb_smart_passage.views.InfoViewPager
+            android:id="@+id/ivp"
+            android:background="@color/black"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_gravity="center_horizontal"
+        android:background="#A8000000"
+        android:padding="20dp"
+        android:orientation="horizontal"
+        android:id="@+id/ll_progress_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:textSize="18dp"
+            android:textColor="@color/white"
+            android:text="正在加载..."
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_btn_list"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="left|center">
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/iv_information_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingTop="50dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="50dp"
+            android:src="@mipmap/icon_btn_introduce_left" />
+
+        <ListView
+            android:id="@+id/lv_information_button"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="40dp"/>
+    </LinearLayout>
+
+    <TextView
+        android:background="#AD000000"
+        android:id="@+id/tv_indicator"
+        android:padding="20dp"
+        android:layout_gravity="right"
+        android:textSize="36dp"
+        android:textColor="@color/white"
+        android:text="1 / 3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+    <ImageView
+        android:padding="20dp"
+        android:id="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/icon_back" />
+</FrameLayout>

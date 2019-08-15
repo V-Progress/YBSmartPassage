@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:match="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/bg_page"
+    android:orientation="vertical"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp">
+
+    <LinearLayout
+        android:paddingBottom="30dp"
+        android:paddingRight="50dp"
+        android:paddingLeft="50dp"
+        android:paddingTop="150dp"
+        android:layout_centerInParent="true"
+        android:background="@mipmap/bg_employ_list_light"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="1300dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_marginTop="26dp"
+                android:paddingRight="25dp"
+                android:paddingLeft="25dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:background="@drawable/shape_system_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="@string/employ_add_title"
+                android:textColor="@color/white"
+                android:textSize="40dp" />
+
+            <ImageView
+                android:layout_marginTop="50dp"
+                android:id="@+id/iv_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="40dp"
+                android:src="@mipmap/icon_back" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="590dp">
+
+            <LinearLayout
+                android:background="@drawable/shape_system_info"
+                android:paddingLeft="20dp"
+                android:paddingRight="15dp"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+
+                <com.yunbiao.yb_smart_passage.faceview.FaceView
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/face_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="108dp"
+                        android:layout_height="44dp"
+                        android:layout_below="@+id/layout_camera"
+                        android:layout_marginRight="15dp"
+                        android:layout_toLeftOf="@+id/view_middle">
+
+                        <Button
+                            android:id="@+id/btn_TakePhoto"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/selector_btn_take_photo"
+                            android:drawableLeft="@mipmap/icon_camera"
+                            android:paddingLeft="18dp"
+                            android:text="@string/employ_add_takephoto"
+                            android:textColor="@color/white"
+                            android:textSize="20dp" />
+
+                        <com.wang.avi.AVLoadingIndicatorView
+                            android:id="@+id/alv_take_photo"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerInParent="true"
+                            android:visibility="gone"
+                            match:indicator="LineScalePulseOutRapid" />
+                    </RelativeLayout>
+
+                    <Button
+                        android:id="@+id/btn_ReTakePhoto"
+                        android:layout_width="108dp"
+                        android:layout_height="44dp"
+                        android:layout_below="@+id/layout_camera"
+                        android:layout_marginLeft="50dp"
+                        android:layout_toRightOf="@+id/view_middle"
+                        android:background="@drawable/shape_bg_btnrepicture"
+                        android:drawableLeft="@mipmap/icon_repicture"
+                        android:paddingLeft="18dp"
+                        android:text="@string/employ_add_retry"
+                        android:textColor="@color/theme_green"
+                        android:textSize="20dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:paddingLeft="15dp"
+                android:paddingRight="20dp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:background="@drawable/shape_employ_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/btn_ReTakePhoto">
+
+                    <TextView
+                        android:id="@+id/tv_jbxx"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="20dp"
+                        android:text="@string/employ_add_info"
+                        android:textColor="@color/font_green"
+                        android:textSize="28dp" />
+
+                    <EditText
+                        android:layout_marginRight="20dp"
+                        android:id="@+id/et_name"
+                        android:layout_width="360dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_jbxx"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="26dp"
+                        android:background="@mipmap/bg_edit"
+                        android:paddingLeft="@dimen/paddingleft_addemploy"
+                        android:textColor="@color/font_green"
+                        android:textSize="20dp" />
+
+                    <ImageView
+                        android:scaleType="centerInside"
+                        android:id="@+id/iv_capture"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_alignTop="@+id/et_name"
+                        android:layout_toRightOf="@+id/et_name"
+                        android:src="@mipmap/avatar" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="44dp"
+                        android:layout_below="@+id/tv_jbxx"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_toLeftOf="@+id/et_name"
+                        android:gravity="center"
+                        android:text="@string/employ_add_name"
+                        android:textColor="@color/font_green"
+                        android:textSize="20dp" />
+
+                    <RadioGroup
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:id="@+id/rg_sex"
+                        android:layout_width="360dp"
+                        android:layout_height="44dp"
+                        android:layout_below="@+id/et_name"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="26dp"
+                        android:paddingRight="12dp"
+                        android:textColor="@color/font_green"
+                        android:textSize="20dp">
+                        <RadioButton
+                            android:textSize="20dp"
+                            android:button="@android:drawable/btn_radio"
+                            android:id="@+id/rb_male"
+                            android:paddingLeft="10dp"
+                            android:textColor="@color/white"
+                            android:text="男"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <RadioButton
+                            android:textSize="20dp"
+                            android:button="@android:drawable/btn_radio"
+                            android:id="@+id/rb_female"
+                            android:layout_marginLeft="20dp"
+                            android:paddingLeft="10dp"
+                            android:textColor="@color/white"
+                            android:text="女"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </RadioGroup>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="44dp"
+                        android:layout_below="@+id/et_name"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="26dp"
+                        android:layout_toLeftOf="@+id/rg_sex"
+                        android:gravity="center"
+                        android:text="性别"
+                        android:textColor="@color/font_green"
+                        android:textSize="20dp" />
+
+                    <EditText
+                        android:id="@+id/et_job"
+                        android:layout_width="360dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/rg_sex"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="26dp"
+                        android:background="@mipmap/bg_edit"
+                        android:paddingLeft="@dimen/paddingleft_addemploy"
+                        android:paddingRight="12dp"
+                        android:textColor="@color/font_green"
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="44dp"
+                        android:layout_below="@+id/rg_sex"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="26dp"
+                        android:layout_toLeftOf="@+id/et_job"
+                        android:gravity="center"
+                        android:text="@string/employ_add_job"
+                        android:textColor="@color/font_green"
+                        android:textSize="20dp" />
+
+                    <CheckBox
+                        android:button="@android:drawable/btn_radio"
+                        android:id="@+id/cb_stat"
+                        android:layout_width="360dp"
+                        android:layout_height="44dp"
+                        android:layout_below="@+id/et_job"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="26dp"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="12dp"
+                        android:textColor="@color/font_green"
+                        android:textSize="20dp"  />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="44dp"
+                        android:layout_below="@+id/et_job"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="26dp"
+                        android:layout_toLeftOf="@+id/cb_stat"
+                        android:gravity="center"
+                        android:text="统计次数"
+                        android:textColor="@color/font_green"
+                        android:textSize="20dp" />
+
+                    <EditText
+                        android:textColorHint="#ACABAB"
+                        android:id="@+id/et_tips"
+                        android:layout_width="360dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/cb_stat"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="26dp"
+                        android:background="@mipmap/bg_edit"
+                        android:paddingLeft="@dimen/paddingleft_addemploy"
+                        android:paddingRight="12dp"
+                        android:textColor="@color/font_green"
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="44dp"
+                        android:layout_below="@+id/cb_stat"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="26dp"
+                        android:layout_toLeftOf="@+id/et_tips"
+                        android:gravity="center"
+                        android:text="提示语"
+                        android:textColor="@color/font_green"
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:layout_marginTop="5dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@+id/et_tips"
+                        android:textSize="14dp"
+                        android:text="注：na：姓名     po：职位     s：来访次数"
+                        android:textColor="@android:color/holo_red_light"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <View
+                        android:id="@+id/view_middle2"
+                        android:layout_width="1dp"
+                        android:layout_height="10dp"
+                        android:layout_below="@+id/et_tips"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="40dp"></View>
+
+                    <Button
+                        android:id="@+id/btn_submit"
+                        android:layout_width="108dp"
+                        android:layout_height="44dp"
+                        android:layout_below="@+id/et_tips"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_toLeftOf="@+id/view_middle2"
+                        android:background="@drawable/shape_bg_btnsync"
+                        android:text="@string/employ_add_confirm"
+                        android:textColor="@color/white"
+                        android:textSize="20dp" />
+
+                    <Button
+                        android:id="@+id/btn_cancle"
+                        android:layout_width="108dp"
+                        android:layout_height="44dp"
+                        android:layout_below="@+id/et_tips"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_toRightOf="@+id/view_middle2"
+                        android:background="@drawable/shape_bg_btnrepicture"
+                        android:text="@string/employ_add_cancel"
+                        android:textColor="@color/theme_green"
+                        android:textSize="20dp" />
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
