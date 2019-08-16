@@ -8,6 +8,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.yunbiao.yb_smart_passage.afinel.Constants;
+import com.yunbiao.yb_smart_passage.db2.VisitorBean;
 
 import java.io.File;
 import java.sql.SQLException;

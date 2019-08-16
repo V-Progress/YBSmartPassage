@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao' // GreenDao配置
 
 android {
     compileSdkVersion 28
@@ -59,9 +60,16 @@ android {
 
     android.applicationVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "TJMirror" + defaultConfig.versionName + "." + defaultConfig.versionCode + "_" + buildTime() + ".apk"
+            outputFileName = "YBSmartPassage" + defaultConfig.versionName + "." + defaultConfig.versionCode + "_" + buildTime() + ".apk"
         }
     }
+    //greenDao配置信息
+    greendao {
+        schemaVersion 7//<--数据库的版本，用于升级时候进行更改
+        daoPackage 'com.yunbiao.yb_smart_passage.db2'//这个是生成DAOs、DaoMaster、DaoSession代码保存的包名,默认为entities所在包名
+        targetGenDir 'src/main/java'//生成DAOs、DaoMaster、DaoSession的目录。默认为build/generated/source/greendao
+    }
+
 }
 
 //用于生成时间
@@ -123,4 +131,8 @@ dependencies {
     //炫酷文字
     //    compile 'androidx.annotation:annotation:1.0.0'
     //    compile 'com.tencent.bugly:crashreport:latest.release'
+
+    // GreenDao(√)
+    implementation 'org.greenrobot:greendao:3.2.2'
+    implementation 'com.github.yuweiguocn:GreenDaoUpgradeHelper:v1.4.0'
 }

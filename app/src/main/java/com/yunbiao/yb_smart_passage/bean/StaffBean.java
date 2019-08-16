@@ -1,6 +1,6 @@
 package com.yunbiao.yb_smart_passage.bean;
 
-import com.yunbiao.yb_smart_passage.db.UserBean;
+import com.yunbiao.yb_smart_passage.db2.UserBean;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class StaffBean {
     public class DepEntry{
         int depId;
         String depName;
-        List<UserBean> entry;
+        List<com.yunbiao.yb_smart_passage.db2.UserBean> entry;
 
         public int getDepId() {
             return depId;
@@ -50,115 +50,6 @@ public class StaffBean {
                     ", entry=" + entry +
                     '}';
         }
-
-//        public class Entry{
-//            private String autograph;
-//            private String birthday;
-//            private String cardId;
-//            private int faceId;
-//            private String head;
-//            private String name;
-//            private String number;
-//            private String position;
-//            private int id;
-//            private int sex;
-//
-//            public String getAutograph() {
-//                return autograph;
-//            }
-//
-//            public void setAutograph(String autograph) {
-//                this.autograph = autograph;
-//            }
-//
-//            public String getBirthday() {
-//                return birthday;
-//            }
-//
-//            public void setBirthday(String birthday) {
-//                this.birthday = birthday;
-//            }
-//
-//            public String getCardId() {
-//                return cardId;
-//            }
-//
-//            public void setCardId(String cardId) {
-//                this.cardId = cardId;
-//            }
-//
-//            public int getFaceId() {
-//                return faceId;
-//            }
-//
-//            public void setFaceId(int faceId) {
-//                this.faceId = faceId;
-//            }
-//
-//            public String getHead() {
-//                return head;
-//            }
-//
-//            public void setHead(String head) {
-//                this.head = head;
-//            }
-//
-//            public String getName() {
-//                return name;
-//            }
-//
-//            public void setName(String name) {
-//                this.name = name;
-//            }
-//
-//            public String getNumber() {
-//                return number;
-//            }
-//
-//            public void setNumber(String number) {
-//                this.number = number;
-//            }
-//
-//            public String getPosition() {
-//                return position;
-//            }
-//
-//            public void setPosition(String position) {
-//                this.position = position;
-//            }
-//
-//            public int getId() {
-//                return id;
-//            }
-//
-//            public void setId(int id) {
-//                this.id = id;
-//            }
-//
-//            public int getSex() {
-//                return sex;
-//            }
-//
-//            public void setSex(int sex) {
-//                this.sex = sex;
-//            }
-//
-//            @Override
-//            public String toString() {
-//                return "Entry{" +
-//                        "autograph='" + autograph + '\'' +
-//                        ", birthday='" + birthday + '\'' +
-//                        ", cardId='" + cardId + '\'' +
-//                        ", faceId='" + faceId + '\'' +
-//                        ", head='" + head + '\'' +
-//                        ", name='" + name + '\'' +
-//                        ", number='" + number + '\'' +
-//                        ", position='" + position + '\'' +
-//                        ", id=" + id +
-//                        ", sex=" + sex +
-//                        '}';
-//            }
-//        }
     }
 
     public int getStatus() {

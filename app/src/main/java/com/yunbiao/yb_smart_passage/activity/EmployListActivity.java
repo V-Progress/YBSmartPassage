@@ -8,14 +8,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-import com.yunbiao.yb_smart_passage.APP;
 import com.yunbiao.yb_smart_passage.R;
 import com.yunbiao.yb_smart_passage.activity.base.BaseActivity;
 import com.yunbiao.yb_smart_passage.adapter.EmployAdapter;
 import com.yunbiao.yb_smart_passage.afinel.ResourceUpdate;
 import com.yunbiao.yb_smart_passage.business.SyncManager;
-import com.yunbiao.yb_smart_passage.db.UserBean;
-import com.yunbiao.yb_smart_passage.db.UserDao;
+import com.yunbiao.yb_smart_passage.db2.DaoManager;
+import com.yunbiao.yb_smart_passage.db2.UserBean;
 import com.yunbiao.yb_smart_passage.faceview.FaceSDK;
 import com.yunbiao.yb_smart_passage.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -48,8 +47,6 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
     private Button btn_sync;
     private ImageView iv_back;
 
-    private UserDao userDao;
-
     private View rootView;
     private View avlLoading;
 
@@ -81,9 +78,7 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
 
     @Override
     protected void initData() {
-        userDao=APP.getUserDao();
-
-        employList=new ArrayList<>();
+         employList=new ArrayList<>();
         employAdapter=new EmployAdapter(this,employList);
         employAdapter.setOnEmpDeleteListener(this);
         employAdapter.setOnEmpEditListener(this);
@@ -121,7 +116,7 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
         avlLoading.setVisibility(View.GONE);
 
         employList.clear();
-        List<UserBean> userBeans = userDao.selectAll();
+        List<UserBean> userBeans = DaoManager.get().queryAll(UserBean.class);
         if (userBeans!=null){
             employList.addAll(userBeans);
             employAdapter.notifyDataSetChanged();
@@ -144,7 +139,7 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
             public void onClick(DialogInterface dialog, int which) {
 
                 final Map<String, String> map = new HashMap<String, String>();
-//                map.put("entryId", userBean.getEmpId()+"");
+                map.put("entryId", userBean.getId()+"");
                 OkHttpUtils.post().url(ResourceUpdate.DELETESTAFF).params(map).build().execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
@@ -153,9 +148,10 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
 
                     @Override
                     public void onResponse(String response, int id) {
-                        boolean b = FaceSDK.instance().removeUser(String.valueOf(userBean.getFaceId()));
+                        boolean b = FaceSDK.instance().removeUser(userBean.getFaceId());
                         if(b){
-                            userDao.delete(employList.get(postion));
+                            long delete = DaoManager.get().delete(employList.get(postion));
+                            d("删除结果：" + delete);
                             employList.remove(postion);
                             employAdapter.notifyDataSetChanged();
                             UIUtils.showTitleTip(EmployListActivity.this,"删除成功");

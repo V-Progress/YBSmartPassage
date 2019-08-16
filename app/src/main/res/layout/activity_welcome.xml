@@ -19,6 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+
     <LinearLayout
         android:visibility="gone"
         android:paddingTop="20dp"
@@ -69,7 +70,6 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/iv_head_tips"
-                android:src="@mipmap/bg_face_frame"
                 android:layout_gravity="center"
                 android:layout_width="300dp"
                 android:layout_height="300dp"/>
@@ -86,17 +86,15 @@
                 android:id="@+id/tv_name_main_tips"
                 android:padding="20dp"
                 android:textColor="@color/white"
-                android:textSize="44dp"
-                android:text="正在检测..."
+                android:textSize="50dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
+                android:textStyle="bold"
                 android:id="@+id/tv_main_tips"
                 android:padding="20dp"
-                android:text="识别成功，请通过"
-                android:textColor="#00ff00"
-                android:textSize="50dp"
+                android:textSize="60dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>

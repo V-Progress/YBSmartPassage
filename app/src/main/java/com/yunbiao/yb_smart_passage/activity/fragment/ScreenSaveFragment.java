@@ -53,34 +53,33 @@ public class ScreenSaveFragment extends Fragment implements AdsListener {
     private long AUTO_SCREEN_TIME = 10;
     private ObjectAnimator objectAnimator;
 
-    private TextView tvTemp;
-    private TextView tvWetness;
-    private TextView tvVoc;
-    private TextView tvPm25;
-    private TextView tvHcho;
-    private TextView tvCo2;
+//    private TextView tvTemp;
+//    private TextView tvWetness;
+//    private TextView tvVoc;
+//    private TextView tvPm25;
+//    private TextView tvHcho;
+//    private TextView tvCo2;
+//    private AdsSwitcher adsSwitcher;
+//    private View progressBar;
+
+    private String cacheAds;
     private View root;
 
-    private AdsSwitcher adsSwitcher;
     private boolean isInit = false;
-    private String cacheAds;
-    private View progressBar;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         EventBus.getDefault().register(this);
         root = inflater.inflate(R.layout.fragment_ads_h, container, false);
-//        root = rootView.findViewById(R.id.rl_root);
-        tvTemp = root.findViewById(R.id.tv_screen_temperature);
-        tvCo2 = root.findViewById(R.id.tv_screen_co2);
-        tvHcho = root.findViewById(R.id.tv_screen_hcho);
-        tvPm25 = root.findViewById(R.id.tv_screen_pm2_5);
-        tvVoc = root.findViewById(R.id.tv_screen_voc);
-        tvWetness = root.findViewById(R.id.tv_screen_wetness);
-
-        adsSwitcher = root.findViewById(R.id.ads_switcher);
-        progressBar = root.findViewById(R.id.ll_progress);
+//        tvTemp = root.findViewById(R.id.tv_screen_temperature);
+//        tvCo2 = root.findViewById(R.id.tv_screen_co2);
+//        tvHcho = root.findViewById(R.id.tv_screen_hcho);
+//        tvPm25 = root.findViewById(R.id.tv_screen_pm2_5);
+//        tvVoc = root.findViewById(R.id.tv_screen_voc);
+//        tvWetness = root.findViewById(R.id.tv_screen_wetness);
+//        adsSwitcher = root.findViewById(R.id.ads_switcher);
+//        progressBar = root.findViewById(R.id.ll_progress);
         return root;
     }
 
@@ -97,22 +96,22 @@ public class ScreenSaveFragment extends Fragment implements AdsListener {
         closeAds();
 
         //初始化广告数据
-        initAdsData();
+//        initAdsData();
 
-        AirQualityUtil.getAirQuality(callback);
+//        AirQualityUtil.getAirQuality(callback);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(AdsAirInfoEvent airInfoEvent) {
         d("update: ----- 收到气候信息更新事件");
-        AirQualityUtil.getAirQuality(callback);
+//        AirQualityUtil.getAirQuality(callback);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(AdsUpdateEvent updateEvent) {
         d("update: ----- 收到广告更新事件");
         isInit = true;
-        getAdsData();
+//        getAdsData();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -141,12 +140,12 @@ public class ScreenSaveFragment extends Fragment implements AdsListener {
     }
 
     private void getAdsData() {
-        progressBar.post(new Runnable() {
-            @Override
-            public void run() {
-                progressBar.setVisibility(View.VISIBLE);
-            }
-        });
+//        progressBar.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                progressBar.setVisibility(View.VISIBLE);
+//            }
+//        });
         int companyid = SpUtils.getInt(SpUtils.COMPANY_ID);
         final Map<String, String> map = new HashMap<String, String>();
         map.put("comId", companyid + "");
@@ -159,12 +158,12 @@ public class ScreenSaveFragment extends Fragment implements AdsListener {
 
             @Override
             public void onAfter(int id) {
-                progressBar.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        progressBar.setVisibility(View.GONE);
-                    }
-                });
+//                progressBar.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        progressBar.setVisibility(View.GONE);
+//                    }
+//                });
             }
 
             @Override
@@ -186,7 +185,7 @@ public class ScreenSaveFragment extends Fragment implements AdsListener {
                 if(advertBean.getStatus() != 1){
                     if(advertBean.getStatus() == 3){
                         //为3表示没广告，隐藏背景
-                        adsSwitcher.clearData();
+//                        adsSwitcher.clearData();
                     }
                     return;
                 }
@@ -208,14 +207,14 @@ public class ScreenSaveFragment extends Fragment implements AdsListener {
             d("没有数据... ");
             return;
         }
-        progressBar.post(new Runnable() {
-            @Override
-            public void run() {
-                progressBar.setVisibility(View.VISIBLE);
-            }
-        });
-        int advertTime = objEntity.getAdvertTime();
-        adsSwitcher.setSwitchTime(advertTime);
+//        progressBar.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                progressBar.setVisibility(View.VISIBLE);
+//            }
+//        });
+//        int advertTime = objEntity.getAdvertTime();
+//        adsSwitcher.setSwitchTime(advertTime);
 
         List<AdvertBean.AdvertObjectEntity.Entity> imgArray = objEntity.getImgArray();
         List<AdvertBean.AdvertObjectEntity.Entity> videoArray = objEntity.getVideoArray();
@@ -233,21 +232,21 @@ public class ScreenSaveFragment extends Fragment implements AdsListener {
 
             @Override
             public void finish() {
-                progressBar.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        progressBar.setVisibility(View.GONE);
-                    }
-                });
-                d("finish: ---------- 结束");
-                //没有广告数据则清除当前的广告内容并显示背景
-                if(mAdsList.size() <= 0){
-                    adsSwitcher.clearData();
-                    return;
-                }
-
-                //有广告则隐藏背景
-                adsSwitcher.setData(mAdsList);
+//                progressBar.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        progressBar.setVisibility(View.GONE);
+//                    }
+//                });
+//                d("finish: ---------- 结束");
+//                //没有广告数据则清除当前的广告内容并显示背景
+//                if(mAdsList.size() <= 0){
+//                    adsSwitcher.clearData();
+//                    return;
+//                }
+//
+//                //有广告则隐藏背景
+//                adsSwitcher.setData(mAdsList);
             }
         });
     }
@@ -362,7 +361,7 @@ public class ScreenSaveFragment extends Fragment implements AdsListener {
             public void run() {
                 stopAutoScreen();
                 //开启广告以后开始计时
-                adsSwitcher.justStartAutoPlay();
+//                adsSwitcher.justStartAutoPlay();
             }
         });
     }
@@ -377,7 +376,7 @@ public class ScreenSaveFragment extends Fragment implements AdsListener {
                 startAutoScreen();
                 root.setVisibility(View.GONE);
                 //关闭广告后停止广告自动
-                adsSwitcher.stopAutoPlay();
+//                adsSwitcher.stopAutoPlay();
             }
         });
     }
@@ -417,12 +416,12 @@ public class ScreenSaveFragment extends Fragment implements AdsListener {
                     String tvoc = airBean.getTVOC();
                     String hcho = airBean.getHCHO();
 
-                    if (!TextUtils.isEmpty(temperature)) tvTemp.setText(temperature+"℃");
-                    if (!TextUtils.isEmpty(wetness)) tvWetness.setText(wetness + "%");
-                    if (!TextUtils.isEmpty(pm25)) tvPm25.setText(pm25);
-                    if (!TextUtils.isEmpty(co2)) tvCo2.setText(co2);
-                    if (!TextUtils.isEmpty(tvoc)) tvVoc.setText(tvoc);
-                    if (!TextUtils.isEmpty(hcho)) tvHcho.setText(hcho);
+//                    if (!TextUtils.isEmpty(temperature)) tvTemp.setText(temperature+"℃");
+//                    if (!TextUtils.isEmpty(wetness)) tvWetness.setText(wetness + "%");
+//                    if (!TextUtils.isEmpty(pm25)) tvPm25.setText(pm25);
+//                    if (!TextUtils.isEmpty(co2)) tvCo2.setText(co2);
+//                    if (!TextUtils.isEmpty(tvoc)) tvVoc.setText(tvoc);
+//                    if (!TextUtils.isEmpty(hcho)) tvHcho.setText(hcho);
                 }
             });
         }
@@ -449,7 +448,7 @@ public class ScreenSaveFragment extends Fragment implements AdsListener {
         //页面被遮挡时隐藏界面停止
         root.setVisibility(View.GONE);
         //关闭广告后停止广告自动
-        adsSwitcher.stopAutoPlay();
+//        adsSwitcher.stopAutoPlay();
         stopAutoScreen();
     }
 

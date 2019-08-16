@@ -20,6 +20,7 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.yunbiao.yb_smart_passage.activity.WelComeActivity;
 import com.yunbiao.yb_smart_passage.afinel.Constants;
+import com.yunbiao.yb_smart_passage.db2.DaoManager;
 import com.yunbiao.yb_smart_passage.db.DatabaseHelper;
 import com.yunbiao.yb_smart_passage.db.SignDao;
 import com.yunbiao.yb_smart_passage.db.UserDao;
@@ -72,6 +73,8 @@ public class APP extends Application {
         super.onCreate();
         instance = this;
         initCompanyId();
+
+        DaoManager.get().initDb();
 
         initDB();
 

@@ -10,7 +10,7 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "UserBean")
 public class UserBean {
 
-    @DatabaseField(columnName = "id", generatedId = true)
+    @DatabaseField(columnName = "id", generatedId = true,unique = true)
     private int id;
 
     @DatabaseField(columnName = "headPath")

@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 
 import com.yunbiao.yb_smart_passage.R;
-import com.yunbiao.yb_smart_passage.db.UserBean;
+import com.yunbiao.yb_smart_passage.db2.UserBean;
 
 import java.util.List;
 
@@ -53,16 +53,15 @@ public class EmployAdapter extends BaseAdapter {
             convertView = View.inflate(context, R.layout.item_employ,null);
             viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
-        }
-        else {
+        } else {
             viewHolder= (ViewHolder) convertView.getTag();
         }
 
         UserBean vip=mlist.get(position);
         viewHolder.tv_No.setText(position+1+"");
 
-//        int empId = vip.getEmpId();
-//        viewHolder.tv_employNo.setText("" + empId);
+        long empId = vip.getId();
+        viewHolder.tv_employNo.setText("" + empId);
 
         viewHolder.tv_employName.setText(vip.getName());
 

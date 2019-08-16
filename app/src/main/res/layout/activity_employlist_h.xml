@@ -97,7 +97,7 @@
             android:background="@drawable/shape_system_name"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/rl_employ_top"
-            android:layout_width="1300dp"
+            android:layout_width="match_parent"
             android:layout_height="600dp">
 
             <LinearLayout

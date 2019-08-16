@@ -1,200 +1,196 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/bg_page"
+    android:background="@mipmap/bj"
+    android:padding="30dp"
     android:orientation="vertical"
     tools:context="com.yunbiao.yb_smart_passage.activity.SystemActivity">
 
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_centerInParent="true"
-        android:background="@mipmap/bg_system"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="120dp">
+
+        <TextView
+            android:id="@+id/tv_online_system"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_system_name"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:text="@string/System_Service_offline"
+            android:textColor="@color/white"
+            android:textSize="26dp" />
 
         <FrameLayout
-            android:paddingRight="40dp"
-            android:paddingLeft="40dp"
-            android:paddingTop="134dp"
-            android:orientation="horizontal"
-            android:gravity="bottom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
 
-            <LinearLayout
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_marginTop="10dp"
-                    android:id="@+id/tv_online_system"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/shape_system_name"
-                    android:paddingTop="3dp"
-                    android:paddingBottom="3dp"
-                    android:paddingLeft="18dp"
-                    android:paddingRight="18dp"
-                    android:text="@string/System_Service_offline"
-                    android:textColor="@color/white"
-                    android:textSize="22dp" />
-
-                <FrameLayout
-                    android:layout_weight="1"
-                    android:layout_width="@dimen/margin_10dp"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/tv_system_compName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="70dp"
-                        android:layout_gravity="center_horizontal"
-                        android:background="@drawable/shape_system_name"
-                        android:maxLength="15"
-                        android:maxLines="1"
-                        android:paddingLeft="20dp"
-                        android:paddingTop="13dp"
-                        android:paddingRight="20dp"
-                        android:paddingBottom="13dp"
-                        android:text="系统信息"
-                        android:textColor="@color/white"
-                        android:textSize="32dp" />
-                </FrameLayout>
-
-                <ImageView
-                    android:padding="10dp"
-                    android:id="@+id/iv_back"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@mipmap/icon_back" />
-            </LinearLayout>
+            <TextView
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp"
+                android:gravity="center"
+                android:id="@+id/tv_system_compName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/shape_system_name"
+                android:maxLength="15"
+                android:maxLines="1"
+                android:text="系统信息"
+                android:textColor="@color/white"
+                android:textSize="40dp" />
         </FrameLayout>
 
+        <ImageView
+            android:padding="20dp"
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@mipmap/icon_back" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_marginTop="30dp"
+        android:background="@drawable/shape_system_info"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <LinearLayout style="@style/system_item_ll_h">
+
+            <TextView
+                style="@style/system_item_lable_tv_h"
+                android:text="@string/System_deviceNo" />
+
+            <TextView
+                android:id="@+id/tv_deviceno_system"
+                style="@style/system_item_lable_tv_h" />
+        </LinearLayout>
+        <LinearLayout style="@style/system_item_ll_h">
+
+            <TextView
+                style="@style/system_item_lable_tv_h"
+                android:text="@string/System_bindCode" />
+
+            <TextView
+                android:id="@+id/tv_bindcode_syetem"
+                style="@style/system_item_lable_tv_h" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/system_item_ll_h">
+
+            <TextView
+                style="@style/system_item_lable_tv_h"
+                android:text="@string/System_Company" />
+
+            <TextView
+                android:id="@+id/tv_company_system"
+                style="@style/system_item_lable_tv_h" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/system_item_ll_h">
+
+            <TextView
+                style="@style/system_item_lable_tv_h"
+                android:text="@string/System_Service" />
+
+            <TextView
+                android:id="@+id/tv_server_system"
+                style="@style/system_item_lable_tv_h" />
+        </LinearLayout>
         <LinearLayout
-            android:layout_marginTop="15dp"
-            android:paddingRight="40dp"
-            android:paddingLeft="40dp"
-            android:orientation="horizontal"
-            android:layout_centerHorizontal="true"
-            android:layout_width="match_parent"
-            android:layout_height="350dp">
+            style="@style/system_item_ll_h"
+            android:layout_width="match_parent">
 
-            <LinearLayout
-                android:background="@drawable/shape_system_info"
-                android:orientation="vertical"
-                android:layout_weight="2"
-                android:layout_width="0dp"
-                android:layout_height="match_parent">
+            <TextView
+                style="@style/system_item_lable_tv_h"
+                android:text="@string/System_ValiDate" />
 
-                <LinearLayout style="@style/system_item_ll_h">
-
-                    <TextView
-                        style="@style/system_item_lable_tv_h"
-                        android:text="@string/System_deviceNo" />
-
-                    <TextView
-                        android:id="@+id/tv_deviceno_system"
-                        style="@style/system_item_lable_tv_h" />
-                </LinearLayout>
-                <LinearLayout style="@style/system_item_ll_h">
-
-                    <TextView
-                        style="@style/system_item_lable_tv_h"
-                        android:text="@string/System_bindCode" />
-
-                    <TextView
-                        android:id="@+id/tv_bindcode_syetem"
-                        style="@style/system_item_lable_tv_h" />
-                </LinearLayout>
-
-                <LinearLayout style="@style/system_item_ll_h">
-
-                    <TextView
-                        style="@style/system_item_lable_tv_h"
-                        android:text="@string/System_Company" />
-
-                    <TextView
-                        android:id="@+id/tv_company_system"
-                        style="@style/system_item_lable_tv_h" />
-                </LinearLayout>
-
-                <LinearLayout style="@style/system_item_ll_h">
-
-                    <TextView
-                        style="@style/system_item_lable_tv_h"
-                        android:text="@string/System_Service" />
-
-                    <TextView
-                        android:id="@+id/tv_server_system"
-                        style="@style/system_item_lable_tv_h" />
-                </LinearLayout>
-                <LinearLayout
-                    style="@style/system_item_ll_h"
-                    android:layout_width="match_parent">
-
-                    <TextView
-                        style="@style/system_item_lable_tv_h"
-                        android:text="@string/System_ValiDate" />
-
-                    <TextView
-                        android:id="@+id/tv_exp_system"
-                        style="@style/system_item_lable_tv_h" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:paddingLeft="40dp"
-                android:paddingRight="18dp"
-                android:layout_marginBottom="-20dp"
-                android:orientation="vertical"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent">
-                <Button
-                    android:paddingBottom="17dp"
-                    android:id="@+id/btn_depart_system"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@mipmap/bg_btn_system"
-                    android:text="@string/System_Manage"
-                    android:textColor="@color/white"
-                    android:textSize="30dp" />
-
-                <Button
-                    android:paddingBottom="17dp"
-                    android:id="@+id/btn_add_system"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@mipmap/bg_btn_system"
-                    android:text="@string/System_Add"
-                    android:textColor="@color/white"
-                    android:textSize="30dp" />
-
-                <Button
-                    android:paddingBottom="17dp"
-                    android:id="@+id/btn_data_system"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@mipmap/bg_btn_system"
-                    android:text="@string/System_Record"
-                    android:textColor="@color/white"
-                    android:textSize="30dp" />
-
-                <Button
-                    android:paddingBottom="17dp"
-                    android:id="@+id/btn_setting_system"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@mipmap/bg_btn_system"
-                    android:text="@string/System_Setting"
-                    android:textColor="@color/white"
-                    android:textSize="30dp" />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/tv_exp_system"
+                style="@style/system_item_lable_tv_h" />
         </LinearLayout>
     </LinearLayout>
-</RelativeLayout>
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight="2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+        <Button
+            android:layout_marginTop="50dp"
+            android:padding="30dp"
+            android:id="@+id/btn_depart_system"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_btn_take_photo"
+            android:text="@string/System_Manage"
+            android:textColor="@color/white"
+            android:textSize="36dp" />
+
+        <Button
+            android:layout_marginTop="50dp"
+            android:padding="30dp"
+            android:id="@+id/btn_add_system"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_btn_take_photo"
+            android:text="@string/System_Add"
+            android:textColor="@color/white"
+            android:textSize="36dp" />
+        <Button
+            android:layout_marginTop="50dp"
+            android:padding="30dp"
+            android:id="@+id/btn_data_system"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_btn_take_photo"
+            android:text="@string/System_Record"
+            android:textColor="@color/white"
+            android:textSize="36dp" />
+
+        <Button
+            android:layout_marginTop="50dp"
+            android:padding="30dp"
+            android:id="@+id/btn_setting_system"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_btn_take_photo"
+            android:text="@string/System_Setting"
+            android:textColor="@color/white"
+            android:textSize="36dp" />
+    </LinearLayout>
+    <!---->
+    <!--<LinearLayout-->
+        <!--android:orientation="vertical"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--android:background="@mipmap/bg_system"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content">-->
+
+
+        <!--<LinearLayout-->
+            <!--android:layout_marginTop="15dp"-->
+            <!--android:paddingRight="40dp"-->
+            <!--android:paddingLeft="40dp"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="350dp">-->
+
+            <!---->
+
+        <!--</LinearLayout>-->
+    <!--</LinearLayout>-->
+</LinearLayout>

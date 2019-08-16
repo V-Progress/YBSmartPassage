@@ -1,186 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@android:color/black"
-    android:layout_height="match_parent">
+    android:orientation="vertical">
 
-
-
-    <ImageView
-        android:visibility="gone"
-        android:id="@+id/iv_screem_bg"
-        android:src="@mipmap/bg_screen_saver"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-    <LinearLayout
-        android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:orientation="vertical"
-        android:padding="20dp">
-
-        <TextClock
-            android:paddingLeft="5dp"
-            android:id="@+id/tc_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/time"
-            android:layout_centerHorizontal="true"
-            android:format12Hour="yyyy/MM/dd   EE"
-            android:format24Hour="yyyy/MM/dd   EE"
-            android:letterSpacing="0.1"
-            android:text="2019/09/11   周三"
-            android:textColor="@color/white"
-            android:textSize="40dp" />
-
-        <TextClock
-            android:id="@+id/time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:format12Hour="HH:mm:ss"
-            android:format24Hour="HH:mm:ss"
-            android:letterSpacing="0.1"
-            android:text="10:00"
-            android:textColor="@color/white"
-            android:textSize="86dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:visibility="gone"
-        android:layout_marginTop="10dp"
-        android:paddingRight="20dp"
-        android:layout_alignParentRight="true"
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="160px">
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="300px"
-            android:layout_height="match_parent">
-            <LinearLayout
-                android:layout_weight="1"
-                android:layout_height="0dp"
-                android:layout_width="match_parent">
-                <TextView
-                    style="@style/tv_screen_air_text"
-                    android:text="温度 :"/>
-
-                <TextView
-                    android:id="@+id/tv_screen_temperature"
-                    style="@style/tv_screen_air_text"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_weight="1"
-                android:layout_height="0dp"
-                android:layout_width="match_parent">
-
-                <TextView
-                    style="@style/tv_screen_air_text"
-                    android:text="湿度 :"/>
-
-                <TextView
-                    android:id="@+id/tv_screen_wetness"
-                    style="@style/tv_screen_air_text"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="300px"
-            android:layout_height="match_parent">
-            <LinearLayout
-                android:layout_weight="1"
-                android:layout_height="0dp"
-                android:layout_width="match_parent">
-
-                <TextView
-                    style="@style/tv_screen_air_text"
-                    android:text="PM2.5 :"/>
-
-                <TextView
-                    android:id="@+id/tv_screen_pm2.5"
-                    style="@style/tv_screen_air_text"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_weight="1"
-                android:layout_height="0dp"
-                android:layout_width="match_parent">
-
-                <TextView
-                    style="@style/tv_screen_air_text"
-                    android:text="甲醛 :"/>
-
-                <TextView
-                    android:id="@+id/tv_screen_hcho"
-                    style="@style/tv_screen_air_text"/>
-
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="300px"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:layout_weight="1"
-                android:layout_height="0dp"
-                android:layout_width="match_parent">
-
-                <TextView
-                    style="@style/tv_screen_air_text"
-                    android:text="VOC :" />
-
-                <TextView
-                    android:id="@+id/tv_screen_voc"
-                    style="@style/tv_screen_air_text"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_weight="1"
-                android:layout_height="0dp"
-                android:layout_width="match_parent">
-
-                <TextView
-                    style="@style/tv_screen_air_text"
-                    android:text="CO2 :" />
-
-                <TextView
-                    android:id="@+id/tv_screen_co2"
-                    style="@style/tv_screen_air_text"/>
-            </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
-
-    <!--TODO 有广告的时候把后面的布局盖住-->
-    <com.yunbiao.yb_smart_passage.views.AdsSwitcher
-        android:id="@+id/ads_switcher"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black" />
-
-    <LinearLayout
-        android:visibility="gone"
-        android:id="@+id/ll_progress"
-        android:gravity="bottom"
-        android:background="#7A0C0C0C"
-        android:padding="10dp"
-        android:layout_alignParentBottom="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <ProgressBar
-            android:layout_width="40dp"
-            android:layout_height="40dp" />
         <TextView
-            android:text="正在加载..."
-            android:textColor="@color/white"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-</RelativeLayout>
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/shape_system_info"
+            android:padding="50dp"
+            android:text="智能通行系统"
+            android:textColor="@color/white"
+            android:textSize="100dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:paddingBottom="350dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@mipmap/bg_face_frame" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <TextClock
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="50dp"
+                    android:format12Hour="yyyy-MM-dd"
+                    android:format24Hour="yyyy-MM-dd"
+                    android:letterSpacing="0.1"
+                    android:text="2019-01-01"
+                    android:textColor="@color/white"
+                    android:textSize="70dp" />
+
+                <TextClock
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="30dp"
+                    android:format12Hour="HH:mm"
+                    android:format24Hour="HH:mm"
+                    android:letterSpacing="0.1"
+                    android:text="10:00"
+                    android:textColor="@color/white"
+                    android:textSize="200dp"
+                    android:textStyle="bold" />
+
+                <TextClock
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_horizontal"
+                    android:format12Hour="EE"
+                    android:format24Hour="EE"
+                    android:letterSpacing="0.1"
+                    android:text="星期一"
+                    android:textColor="@color/white"
+                    android:textSize="70dp" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+    </RelativeLayout>
+</LinearLayout>

@@ -37,7 +37,8 @@ import com.yunbiao.yb_smart_passage.business.LocateManager;
 import com.yunbiao.yb_smart_passage.business.ResourceCleanManager;
 import com.yunbiao.yb_smart_passage.business.PassageManager;
 import com.yunbiao.yb_smart_passage.business.SyncManager;
-import com.yunbiao.yb_smart_passage.db.PassageBean;
+import com.yunbiao.yb_smart_passage.business.VisitorManager;
+import com.yunbiao.yb_smart_passage.db2.PassageBean;
 import com.yunbiao.yb_smart_passage.faceview.FaceResult;
 import com.yunbiao.yb_smart_passage.faceview.FaceView;
 import com.yunbiao.yb_smart_passage.utils.RestartAPPTool;
@@ -47,7 +48,6 @@ import com.yunbiao.yb_smart_passage.xmpp.ServiceManager;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.xutils.x;
 
 import java.io.File;
 
@@ -68,13 +68,6 @@ public class WelComeActivity extends BaseGpioActivity {
     //摄像头分辨率
     private FaceView faceView;
     private ScreenSaveFragment adsFragment;
-
-    private View llMainTips;
-    private PropertyValuesHolder animY;
-    private ObjectAnimator objectAnimator;
-    private CircleImageView ivHeadTips;
-    private TextView tvNameTips;
-    private TextView tvMainTips;
 
     @Override
     protected int getPortraitLayout() {
@@ -105,14 +98,11 @@ public class WelComeActivity extends BaseGpioActivity {
         ivMainLogo = findViewById(R.id.iv_main_logo);
         tvMainAbbName = findViewById(R.id.tv_main_abbname);
 
-        llMainTips = find(R.id.ll_main_tips);
-        ivHeadTips = llMainTips.findViewById(R.id.iv_head_tips);
-        tvMainTips = find(R.id.tv_main_tips);
-        tvNameTips = find(R.id.tv_name_main_tips);
-
         //加载广告Fragment
         adsFragment = new ScreenSaveFragment();
         addFragment(R.id.ll_face_main, adsFragment);
+
+        VerifyTips.instance().init(this);
     }
 
     @Override
@@ -155,11 +145,13 @@ public class WelComeActivity extends BaseGpioActivity {
             }
 
             long faceId = result.getBaseProperty().getFaceId();
+
             if (mCurrFaceId != faceId) {
+                Log.e(TAG, "onFaceDetection: ----- " + mCurrFaceId + "---" + faceId);
                 mCurrFaceId = faceId;
-                showMyTips(CHECK_ING);
+                VerifyTips.instance().showMyTipsDelay();
             }
-            showFaceLoading();
+            VerifyTips.instance().showFaceLoading();
         }
 
         @Override
@@ -183,6 +175,8 @@ public class WelComeActivity extends BaseGpioActivity {
             PassageManager.instance().init(WelComeActivity.this, signEventListener);
 
             setCompInfo();
+
+            VisitorManager.instance();
         }
 
         @Override
@@ -197,14 +191,15 @@ public class WelComeActivity extends BaseGpioActivity {
 
     private PassageManager.SignEventListener signEventListener = new PassageManager.SignEventListener() {
         @Override
-        public void onSigned(final PassageBean passageBean) {
-            showMyTips(passageBean.getName(), CHECK_SUCC,passageBean.getHeadPath());
+        public void onSigned(PassageBean passageBean) {
+            int userType = passageBean.getUserType();
+            VerifyTips.instance().showMyTips(passageBean.getUserType(),passageBean.getName(), VerifyTips.CHECK_SUCC,passageBean.getHeadPath());
             openDoor();
         }
 
         @Override
         public void onVerifyFailed() {
-            showMyTips(CHECK_FAILED);
+            VerifyTips.instance().showMyTips(VerifyTips.CHECK_FAILED);
         }
     };
 
@@ -364,101 +359,4 @@ public class WelComeActivity extends BaseGpioActivity {
         SyncManager.instance().destory();
         LocateManager.instance().destory();
     }
-
-    /*==识别提示=======================================================================================================*/
-    private String CHECK_ING = "正在检测，请稍等... ";
-    private String CHECK_SUCC = "识别成功，请通过";
-    private String CHECK_FAILED = "验证失败，请重试";
-
-    private void showFaceLoading() {
-        if (llMainTips.isShown()) {
-            startAutoHideTips();
-            return;
-        }
-        llMainTips.setVisibility(View.VISIBLE);
-        startAnim(llMainTips, llMainTips.getMeasuredHeight(), 0, new Runnable() {
-            @Override
-            public void run() {
-                showMyTips(CHECK_ING);
-            }
-        });
-    }
-
-    private void showMyTips(String tips){
-        showMyTips("",tips,null);
-    }
-    private void showMyTips(final String name, final String tips, final String path) {
-        llMainTips.post(new Runnable() {
-            @Override
-            public void run() {
-                ivHeadTips.clearAnimation();
-                if (TextUtils.equals(tips, CHECK_ING)) {//如果是正在检测就开始动画
-                    ivHeadTips.setImageResource(R.mipmap.bg_face_frame);
-                    RotateAnimation rotateAnimation = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-                    rotateAnimation.setRepeatMode(Animation.INFINITE);
-                    rotateAnimation.setRepeatCount(Animation.INFINITE);
-                    rotateAnimation.setInterpolator(new LinearInterpolator());
-                    rotateAnimation.setDuration(2000);
-                    ivHeadTips.startAnimation(rotateAnimation);
-                    tvMainTips.setTextColor(Color.WHITE);
-                } else if(TextUtils.equals(tips,CHECK_FAILED)){//如果是检测失败就设置为红色
-                    ivHeadTips.setImageResource(R.mipmap.error_face_frame);
-                    tvMainTips.setTextColor(Color.RED);
-                } else {//如果是检测成功就绿色
-                    tvMainTips.setTextColor(Color.GREEN);
-                    Glide.with(WelComeActivity.this).load(path).asBitmap().into(ivHeadTips);
-                }
-
-                tvNameTips.setText(TextUtils.isEmpty(name) ? "" : name);
-                tvMainTips.setText(TextUtils.isEmpty(tips) ? "" : tips);
-            }
-        });
-    }
-
-    private void startAutoHideTips() {
-        llMainTips.removeCallbacks(hideRunnable);
-        llMainTips.postDelayed(hideRunnable, 1500);
-    }
-
-    private Runnable hideRunnable = new Runnable() {
-        @Override
-        public void run() {
-            hideFaceLoading();
-        }
-    };
-
-    private void hideFaceLoading() {
-        ivHeadTips.clearAnimation();
-        startAnim(llMainTips, 0, llMainTips.getMeasuredHeight(), new Runnable() {
-            @Override
-            public void run() {
-                llMainTips.setVisibility(View.GONE);
-                showMyTips("");
-            }
-        });
-    }
-
-
-    private void startAnim(final View view, int formY, int toY, final Runnable runnable) {
-        if (objectAnimator != null && objectAnimator.isRunning()) {
-            return;
-        }
-        view.setLayerType(View.LAYER_TYPE_HARDWARE, null);//开始动画前开启硬件加速
-        animY = PropertyValuesHolder.ofFloat("translationY", formY, toY);//生成值动画
-        //加载动画Holder
-        objectAnimator = ObjectAnimator.ofPropertyValuesHolder(view, animY);
-        objectAnimator.setDuration(300);
-        objectAnimator.setInterpolator(new LinearInterpolator());
-        objectAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                view.setLayerType(View.LAYER_TYPE_NONE, null);//动画结束时关闭硬件加速
-                if (runnable != null) {
-                    runnable.run();
-                }
-            }
-        });
-        objectAnimator.start();
-    }
-
 }

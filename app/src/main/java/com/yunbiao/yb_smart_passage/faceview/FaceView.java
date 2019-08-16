@@ -31,7 +31,7 @@ import java.util.Set;
 public class FaceView extends FrameLayout {
     private static final String TAG = "FaceView";
     private FaceCanvasView mFaceCanvasView;
-    private boolean isPaused = false;
+//    private boolean isPaused = false;
     private byte[] mFaceImage;
     private CacheMap faceCacheMap = new CacheMap();
     private SurfaceView rgbView;
@@ -159,10 +159,10 @@ public class FaceView extends FrameLayout {
     private FaceFrameManager.BasePropertyCallback basePropertyCallback = new FaceFrameManager.BasePropertyCallback() {
         @Override
         public void onBasePropertyResult(Map<Long, BaseProperty> basePropertyMap) {
-            if (isPaused) {
-                mFaceCanvasView.clearFaceFrame();
-                return;
-            }
+//            if (isPaused) {
+//                mFaceCanvasView.clearFaceFrame();
+//                return;
+//            }
             if (basePropertyMap != null && basePropertyMap.values() != null && basePropertyMap.values().size() > 0) {
                 drawFaceBoxes(basePropertyMap);
             } else {
@@ -176,24 +176,35 @@ public class FaceView extends FrameLayout {
     private FaceFrameManager.VerifyResultCallback verifyResultCallback = new FaceFrameManager.VerifyResultCallback() {
         @Override
         public void onDetectPause() {
-            if (isPaused) {
-                return;
-            }
+//            if (isPaused) {
+//                return;
+//            }
             FaceFrameManager.resumeDetect();
         }
 
         @Override
         public void onVerifyResult(VerifyResult verifyResult) {
-            if (isPaused) {
-                return;
-            }
+//            if (isPaused) {
+//                return;
+//            }
             updateVerifyResult(verifyResult);
             mFaceImage = verifyResult.getFaceImageBytes();
 
-            e("检测耗时----------> " + verifyResult.getCheckConsumeTime() + " 毫秒");
-            e("认证耗时----------> " + verifyResult.getVerifyConsumeTime() + " 毫秒");
-            e("提取耗时----------> " + verifyResult.getExtractConsumeTime() + " 毫秒");
-            e("*******************************************************");
+            if(verifyResult.getResult() == VerifyResult.DEFAULT_FACE){
+                e("未知");
+            } else if(verifyResult.getResult() == VerifyResult.REGISTER_FACE){
+                e("不认识");
+            } else if(verifyResult.getResult() == VerifyResult.NOT_HUMAN_FACE){
+                e("不是真实人脸");
+            } else {
+                e("认识");
+            }
+
+
+//            e("检测耗时----------> " + verifyResult.getCheckConsumeTime() + " 毫秒");
+//            e("认证耗时----------> " + verifyResult.getVerifyConsumeTime() + " 毫秒");
+//            e("提取耗时----------> " + verifyResult.getExtractConsumeTime() + " 毫秒");
+//            e("*******************************************************");
 
             handleSearchResult(verifyResult);
         }
@@ -296,17 +307,17 @@ public class FaceView extends FrameLayout {
     }
 
     public void resume() {
-        isPaused = false;
+//        isPaused = false;
         FaceBoxUtil.setPreviewWidth(rgbView.getLeft(),rgbView.getRight(),rgbView.getTop(),rgbView.getBottom());
         FaceSDK.instance().setCallback(basePropertyCallback, facePropertyCallback, verifyResultCallback);
     }
 
     public void pause() {
-        isPaused = true;
+//        isPaused = true;
     }
 
     public void destory() {
-        isPaused = true;
+//        isPaused = true;
         mFaceCanvasView.clearFaceFrame();
         ExtCameraManager.instance().releaseAllCamera();
     }

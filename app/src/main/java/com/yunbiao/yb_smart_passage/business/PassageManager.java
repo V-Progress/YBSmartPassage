@@ -16,10 +16,10 @@ import com.yunbiao.yb_smart_passage.APP;
 import com.yunbiao.yb_smart_passage.Config;
 import com.yunbiao.yb_smart_passage.afinel.Constants;
 import com.yunbiao.yb_smart_passage.afinel.ResourceUpdate;
-import com.yunbiao.yb_smart_passage.db.PassageBean;
-import com.yunbiao.yb_smart_passage.db.SignDao;
-import com.yunbiao.yb_smart_passage.db.UserBean;
-import com.yunbiao.yb_smart_passage.db.UserDao;
+import com.yunbiao.yb_smart_passage.db2.PassageBean;
+import com.yunbiao.yb_smart_passage.db2.DaoManager;
+import com.yunbiao.yb_smart_passage.db2.UserBean;
+import com.yunbiao.yb_smart_passage.db2.VisitorBean;
 import com.yunbiao.yb_smart_passage.system.HeartBeatClient;
 import com.yunbiao.yb_smart_passage.utils.SpUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -52,7 +52,6 @@ import okhttp3.Call;
 public class PassageManager {
     private final String TAG = getClass().getSimpleName();
     private static PassageManager instance;
-    private SignDao signDao;
     private final int UPDATE_TIME = 20;
     private SignEventListener listener;
     private String today;
@@ -60,14 +59,14 @@ public class PassageManager {
     private DateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
     private final ExecutorService threadPool;
     private final ScheduledExecutorService autoUploadThread;
-    private long verifyOffsetTime = 8000;//验证间隔时间
-    private final UserDao userDao;
+    private long verifyOffsetTime = 2000;//验证间隔时间
     private boolean isDebug = true;
 
-    private final int TAG_MAX_TIME = 6;
+    private final int TAG_MAX_TIME = 5;
     private int verifyTag = 0;
+    private int queryTag = 0;
 
-    private Map<Integer, Long> passageMap = new HashMap<>();
+    private Map<String, Long> passageMap = new HashMap<>();
 
     public static PassageManager instance() {
         if (instance == null) {
@@ -83,9 +82,6 @@ public class PassageManager {
     private PassageManager() {
         //初始化当前时间
         today = dateFormat.format(new Date());
-        signDao = APP.getSignDao();
-        userDao = APP.getUserDao();
-
         threadPool = Executors.newFixedThreadPool(2);
         threadPool.execute(initRunnable);
 
@@ -97,15 +93,15 @@ public class PassageManager {
     private Runnable initRunnable = new Runnable() {
         @Override
         public void run() {
-            final List<PassageBean> passageBeans = signDao.queryByDate(today);
+            final List<PassageBean> passageBeans = DaoManager.get().queryByPassDate(today);
             if(passageBeans != null){
                 for (PassageBean passageBean : passageBeans) {
                     long passTime = passageBean.getPassTime();
-                    int id = passageBean.getId();
-                    if(passageMap.containsKey(id)){
-                        Long time = passageMap.get(id);
+                    String faceId = passageBean.getFaceId();
+                    if(passageMap.containsKey(faceId)){
+                        Long time = passageMap.get(faceId);
                         if(passTime > time){
-                            passageMap.put(id,passTime);
+                            passageMap.put(faceId,passTime);
                         } else {
                             continue;
                         }
@@ -129,7 +125,7 @@ public class PassageManager {
                 initRunnable.run();
             }
 
-            final List<PassageBean> passList = signDao.queryByIsUpload(false);
+            final List<PassageBean> passList = DaoManager.get().queryByPassUpload(false);
             if (passList == null) {
                 return;
             }
@@ -205,7 +201,7 @@ public class PassageManager {
                                     for (PassageBean passageBean : passList) {
 
                                         passageBean.setUpload(true);
-                                        int update = signDao.update(passageBean);
+                                        long update = DaoManager.get().update(passageBean);
                                         d("更新结果... " + update);
                                     }
                                 }
@@ -227,6 +223,7 @@ public class PassageManager {
     public void checkSign(VerifyResult verifyResult) {
         int resultCode = verifyResult.getResult();
         if (resultCode != VerifyResult.UNKNOWN_FACE) {
+            d("识别失败 " + resultCode);
             verifyTag ++;
             if(verifyTag >= TAG_MAX_TIME){
                 verifyTag = 0;
@@ -243,43 +240,62 @@ public class PassageManager {
 
         byte[] faceImageBytes = verifyResult.getFaceImageBytes();
         FaceUser user = verifyResult.getUser();
-        if (user == null) {
-            return;
-        }
-        String userId = user.getUserId();
-        if (TextUtils.isEmpty(userId)) {
+        if (user == null || TextUtils.isEmpty(user.getUserId())) {
             return;
         }
 
-        d("开始签到... ");
+        //生成签到时间
         final long currTime = System.currentTimeMillis();
         final PassageBean passageBean = new PassageBean();
-        passageBean.setDate(dateFormat.format(currTime));
-        passageBean.setFaceId(Integer.valueOf(userId));
+        passageBean.setCreateDate(dateFormat.format(currTime));
+        passageBean.setFaceId(user.getUserId());
         passageBean.setPassTime(currTime);
+        passageBean.setSimilar(verifyResult.getCheckScore()+"");
+
+        d("开始签到... ");
+        int faceId = Integer.parseInt(user.getUserId());
+        if(faceId < 0){//如果小于0 走访客流程
+            checkVisitor(passageBean,faceImageBytes);
+        } else {//如果大于0 走员工流程
+            checkUser(passageBean,faceImageBytes);
+        }
+    }
+
+    private void checkVisitor(final PassageBean passageBean, byte[] imgBytes){
+        d("是访客");
+
+        String faceId = passageBean.getFaceId();
+        VisitorBean visitorBean = DaoManager.get().queryByVisitorFaceId(faceId);
+        if(visitorBean == null){
+            d("库中无此人... ");
+            queryTag++;
+            if(queryTag >= TAG_MAX_TIME){
+                queryTag = 0;
+                mAct.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onVerifyFailed();
+                    }
+                });
+            }
+            return;
+        }
+        queryTag = 0;
+
         if(!canPass(passageBean)){
             d("时间未到... ");
             return;
         }
 
-        List<UserBean> userBeans = userDao.queryByFaceId(Integer.valueOf(userId));
-        if (userBeans == null || userBeans.size() <= 0) {
-            d("库中无此人... ");
-            return;
-        }
-        UserBean userBean = userBeans.get(0);
-        //如果需要统计次数则递增并更新数据库
-        passageBean.setEntryId(userBean.getId());
-        passageBean.setSex(userBean.getSex());
-        passageBean.setName(userBean.getName());
-        passageBean.setSimilar(verifyResult.getCheckScore()+"");
-        passageBean.setDepartName(userBean.getDepartName());
+        passageBean.setEntryId(visitorBean.getId());
+        passageBean.setSex(visitorBean.getSex());
+        passageBean.setName(visitorBean.getName());
+        passageBean.setUserType(-1);
 
-        File imgFile = saveBitmap(currTime, faceImageBytes);
-        d("签到成功... " + imgFile.getPath());
+        File imgFile = saveBitmap(passageBean.getPassTime(), imgBytes);
         passageBean.setHeadPath(imgFile.getPath());
 
-        d("签到成功... " + passageBean.getName());
+        d("访客通行... " + passageBean.getName() + " --- " + imgFile.getPath());
         if (listener != null) {
             mAct.runOnUiThread(new Runnable() {
                 @Override
@@ -288,15 +304,59 @@ public class PassageManager {
                 }
             });
         }
+    }
 
-        sendSignRecord(passageBean);
+    private void checkUser(final PassageBean passageBean, byte[] imgBytes){
+        d("是员工");
+
+        String faceId = passageBean.getFaceId();
+        List<UserBean> UserBeans = DaoManager.get().queryUserByFaceId(faceId);
+        if(UserBeans == null || UserBeans.size() <= 0){
+            d("库中无此人... ");
+            queryTag++;
+            if(queryTag >= TAG_MAX_TIME){
+                queryTag = 0;
+                mAct.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onVerifyFailed();
+                    }
+                });
+            }
+            return;
+        }
+        queryTag = 0;
+
+        if(!canPass(passageBean)){
+            d("时间未到... ");
+            return;
+        }
+
+        UserBean userBean = UserBeans.get(0);
+        passageBean.setEntryId(userBean.getId());
+        passageBean.setSex(userBean.getSex());
+        passageBean.setName(userBean.getName());
+        passageBean.setUserType(0);
+
+        File imgFile = saveBitmap(passageBean.getPassTime(), imgBytes);
+        passageBean.setHeadPath(imgFile.getPath());
+
+        d("员工通行... " + passageBean.getName() + " --- " + imgFile.getPath());
+        if (listener != null) {
+            mAct.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    listener.onSigned(passageBean);
+                }
+            });
+        }
     }
 
     private void sendSignRecord(final PassageBean passageBean) {
         String deviceNo = HeartBeatClient.getDeviceNo();
         int comId = SpUtils.getInt(SpUtils.COMPANY_ID);
         final Map<String, String> params = new HashMap<>();
-        params.put("entryId", passageBean.getEntryId()+"");
+        params.put("entryId", passageBean.getId()+"");
         params.put("similar", passageBean.getSimilar()+"");
         params.put("card", passageBean.getCard()+"");
         params.put("isPass", passageBean.getIsPass()+"");
@@ -314,7 +374,7 @@ public class PassageManager {
             public void onError(Call call, Exception e, int id) {
                 Log.e(TAG, "onError: " + e != null ? e.getMessage() : "NULL");
                 passageBean.setUpload(false);
-                signDao.insert(passageBean);
+                DaoManager.get().addOrUpdate(passageBean);
             }
 
             @Override
@@ -323,7 +383,7 @@ public class PassageManager {
                 JSONObject jsonObject = JSONObject.parseObject(response);
                 String status = jsonObject.getString("status");
                 passageBean.setUpload(TextUtils.equals("1", status));
-                signDao.insert(passageBean);
+                DaoManager.get().addOrUpdate(passageBean);
             }
 
             @Override
@@ -334,7 +394,7 @@ public class PassageManager {
     }
 
     private boolean canPass(PassageBean passageBean) {
-        int faceId = passageBean.getFaceId();
+        String faceId = passageBean.getFaceId();
         if (!passageMap.containsKey(faceId)) {
             passageMap.put(faceId, passageBean.getPassTime());
             return true;
@@ -351,7 +411,7 @@ public class PassageManager {
 
     class SignDataBean {
         public int isPass;
-        int entryId;
+        long entryId;
         long createTime;
         int stat;
         String similar;

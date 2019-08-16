@@ -12,8 +12,10 @@ public class Constants {
     public static final String XMPP_PORT = BuildConfig.XMPP_PORT;
     public static final String RESOURCE_HOST = NetConfig.PRE + BuildConfig.HOST;
     public static final String RESOURCE_PORT = BuildConfig.RESOURCE_PORT;
+    //生成主地址
     public static String RESOURCE_URL = RESOURCE_HOST + NetConfig.COLON + RESOURCE_PORT + BuildConfig.SUFFIX;
 
+    //生成本地地址
     public static String LOCAL_ROOT_PATH = Environment.getExternalStorageDirectory().getPath() + "/yb_passage/";
     public static String DATABASE_PATH = LOCAL_ROOT_PATH + "database/";//数据库路径
     public static String CACHE_PATH = LOCAL_ROOT_PATH + "cache/";//缓存路径
@@ -49,13 +51,13 @@ public class Constants {
          * 本地开发环境
          */
         //主机地址
-        String DEV_URL = "47.105.80.245";
+        String DEV_URL = "192.168.1.54";
         //XMPP端口
         String DEV_XMPP_PORT = "5222";
         //数据端口
-        String DEV_RES_PORT = "8080";
+        String DEV_RES_PORT = "8088";
         //项目名
-        String DEV_SUFFIX = "/";
+        String DEV_SUFFIX = "/ybface/";
     }
 }
 
