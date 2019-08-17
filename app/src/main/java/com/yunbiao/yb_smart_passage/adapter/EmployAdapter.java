@@ -117,7 +117,6 @@ public class EmployAdapter extends BaseAdapter {
             tv_employJob= (TextView) convertView.findViewById(R.id.tv_employJob);
             tv_edit= (TextView) convertView.findViewById(R.id.tv_edit);
             tv_delete= (TextView) convertView.findViewById(R.id.tv_delete);
-
         }
     }
 
