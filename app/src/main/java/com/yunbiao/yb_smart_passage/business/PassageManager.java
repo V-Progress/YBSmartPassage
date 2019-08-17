@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,6 +58,7 @@ public class PassageManager {
     private String today;
     private Activity mAct;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
+    private DateFormat passageDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private final ExecutorService threadPool;
     private final ScheduledExecutorService autoUploadThread;
     private long verifyOffsetTime = 2000;//验证间隔时间
@@ -287,6 +289,27 @@ public class PassageManager {
             return;
         }
 
+        String currStartStr = visitorBean.getCurrStart();
+        String currEndStr = visitorBean.getCurrEnd();
+
+        String currDateStr = passageDateFormat.format(new Date(passageBean.getPassTime()));
+
+        try {
+            Date currDate = passageDateFormat.parse(currDateStr);
+            Date startDate = passageDateFormat.parse(currStartStr);
+            Date endDate = passageDateFormat.parse(currEndStr);
+            //如果当前时间早于开始时间 或者 晚于结束时间则不允许通过
+            if(currDate.before(startDate)){
+                onNotTime(-1,passageBean);
+                return;
+            } else if(currDate.after(endDate)){
+                onNotTime(-9,passageBean);
+                return;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         passageBean.setEntryId(visitorBean.getId());
         passageBean.setSex(visitorBean.getSex());
         passageBean.setName(visitorBean.getName());
@@ -296,11 +319,26 @@ public class PassageManager {
         passageBean.setHeadPath(imgFile.getPath());
 
         d("访客通行... " + passageBean.getName() + " --- " + imgFile.getPath());
+        onPass(passageBean);
+    }
+
+    private void onNotTime(final int tag, final PassageBean passageBean){
+        if(listener != null){
+            mAct.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    listener.onNotTime(tag,passageBean);
+                }
+            });
+        }
+    }
+
+    private void onPass(final PassageBean passageBean){
         if (listener != null) {
             mAct.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    listener.onSigned(passageBean);
+                    listener.onPass(passageBean);
                 }
             });
         }
@@ -346,7 +384,7 @@ public class PassageManager {
             mAct.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    listener.onSigned(passageBean);
+                    listener.onPass(passageBean);
                 }
             });
         }
@@ -480,7 +518,8 @@ public class PassageManager {
     }
 
     public interface SignEventListener {
-        void onSigned(PassageBean passageBean);
+        void onPass(PassageBean passageBean);
+        void onNotTime(int timeTag,PassageBean passageBean);
         void onVerifyFailed();
     }
 

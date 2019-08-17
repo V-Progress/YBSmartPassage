@@ -6,6 +6,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.jdjr.risk.face.local.user.FaceUser;
 import com.jdjr.risk.face.local.user.FaceUserManager;
+import com.yunbiao.yb_smart_passage.activity.Event.VisitorUpdateEvent;
 import com.yunbiao.yb_smart_passage.afinel.Constants;
 import com.yunbiao.yb_smart_passage.afinel.ResourceUpdate;
 import com.yunbiao.yb_smart_passage.bean.VisitorResponse;
@@ -16,6 +17,8 @@ import com.yunbiao.yb_smart_passage.system.HeartBeatClient;
 import com.yunbiao.yb_smart_passage.utils.xutil.MyXutils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.HashMap;
@@ -66,6 +69,7 @@ public class VisitorManager {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         Log.e(TAG, "onError: " + (e == null ? "NULL" : e.getMessage()));
+                        finishRunnable.run();
                     }
 
                     @Override
@@ -188,6 +192,7 @@ public class VisitorManager {
             }
         }
 
+        EventBus.getDefault().postSticky(new VisitorUpdateEvent());
         finishRunnable.run();
     }
 

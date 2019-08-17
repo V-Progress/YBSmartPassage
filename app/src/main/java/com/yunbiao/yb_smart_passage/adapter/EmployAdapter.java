@@ -60,8 +60,7 @@ public class EmployAdapter extends BaseAdapter {
         UserBean vip=mlist.get(position);
         viewHolder.tv_No.setText(position+1+"");
 
-        long empId = vip.getId();
-        viewHolder.tv_employNo.setText("" + empId);
+        viewHolder.tv_employNo.setText(vip.getNumber());
 
         viewHolder.tv_employName.setText(vip.getName());
 

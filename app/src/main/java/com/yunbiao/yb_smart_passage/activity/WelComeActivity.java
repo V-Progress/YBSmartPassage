@@ -149,7 +149,9 @@ public class WelComeActivity extends BaseGpioActivity {
             if (mCurrFaceId != faceId) {
                 Log.e(TAG, "onFaceDetection: ----- " + mCurrFaceId + "---" + faceId);
                 mCurrFaceId = faceId;
-                VerifyTips.instance().showMyTipsDelay();
+
+//                VerifyTips.instance().showMyTipsDelay();
+                VerifyTips.instance().showMyTips(VerifyTips.CHECK_ING);
             }
             VerifyTips.instance().showFaceLoading();
         }
@@ -191,8 +193,16 @@ public class WelComeActivity extends BaseGpioActivity {
 
     private PassageManager.SignEventListener signEventListener = new PassageManager.SignEventListener() {
         @Override
-        public void onSigned(PassageBean passageBean) {
-            int userType = passageBean.getUserType();
+        public void onNotTime(int timeTag, PassageBean passageBean) {
+            if(timeTag == -1){
+                VerifyTips.instance().showMyTips(VerifyTips.CHECK_FAILED_NOTINTIME);
+            } else {
+                VerifyTips.instance().showMyTips(VerifyTips.CHECK_FAILED_EXPIRE);
+            }
+        }
+
+        @Override
+        public void onPass(PassageBean passageBean) {
             VerifyTips.instance().showMyTips(passageBean.getUserType(),passageBean.getName(), VerifyTips.CHECK_SUCC,passageBean.getHeadPath());
             openDoor();
         }

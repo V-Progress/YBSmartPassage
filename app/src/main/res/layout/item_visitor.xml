@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="86dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:maxLines="2"
+            android:id="@+id/tv_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:textSize="24dp"
+            android:text="张三"
+            android:gravity="center" />
+
+        <TextView
+            android:maxLines="3"
+            android:id="@+id/tv_company"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.5"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:text="xxx有限公司"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/tv_phone_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:text="13030000000"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/tv_visit_to"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:text="李四"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/tv_visit_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.5"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:text="2019-01-01\n~\n2019-01-01"
+            android:gravity="center" />
+
+        <ImageView
+            android:id="@+id/iv_visitor_head"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/bg_face_frame"
+            android:layout_weight="1.5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+</LinearLayout>

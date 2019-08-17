@@ -128,5 +128,9 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         super.onDestroy();
         EventBus.getDefault().unregister(this);
     }
+
+    public void goVisitorActivity(View view) {
+        startActivity(new Intent(this,VisitorActivity.class));
+    }
 }
 

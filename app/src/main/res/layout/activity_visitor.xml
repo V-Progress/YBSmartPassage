@@ -24,11 +24,12 @@
             android:paddingTop="10dp"
             android:paddingRight="20dp"
             android:paddingBottom="10dp"
-            android:text="@string/employ_list_title"
+            android:text="访客列表"
             android:textColor="@color/white"
             android:textSize="38dp" />
 
         <ImageView
+            android:onClick="onBack"
             android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -40,40 +41,7 @@
     </FrameLayout>
 
     <LinearLayout
-        android:paddingTop="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="left">
-
-        <Button
-            android:id="@+id/btn_addEmploy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/shape_employ_button"
-            android:drawableLeft="@mipmap/icon_add"
-            android:paddingLeft="18dp"
-            android:paddingRight="15dp"
-            android:text="新增员工"
-            android:textColor="#64DCFE"
-            android:textSize="20dp" />
-
-        <Button
-            android:id="@+id/btn_sync"
-            android:layout_width="108dp"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/btn_addEmploy"
-            android:background="@drawable/shape_bg_btnsync"
-            android:drawableLeft="@mipmap/icon_sync"
-            android:paddingLeft="20dp"
-            android:text="@string/employ_list_depart_sync"
-            android:textColor="@color/white"
-            android:textSize="20dp"
-            android:visibility="visible" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:id="@+id/layout_title"
         android:layout_width="match_parent"
         android:layout_height="44dp"
@@ -84,45 +52,54 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/employ_list_field_index"
+            android:text="姓名"
             android:textColor="@color/white"
             android:textSize="20dp" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
+            android:layout_weight="2.5"
             android:gravity="center"
-            android:text="@string/employ_list_field_number"
+            android:text="单位"
             android:textColor="@color/white"
             android:textSize="20dp" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="1.5"
             android:gravity="center"
-            android:text="@string/employ_list_field_name"
+            android:text="电话"
             android:textColor="@color/white"
             android:textSize="20dp" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/employ_list_field_position"
+            android:text="拜访人"
             android:textColor="@color/white"
             android:textSize="20dp" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
+            android:layout_weight="2.5"
             android:gravity="center"
-            android:text="@string/employ_list_field_control"
+            android:text="拜访时限"
+            android:textColor="@color/white"
+            android:textSize="20dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:gravity="center"
+            android:text="照片"
             android:textColor="@color/white"
             android:textSize="20dp" />
 

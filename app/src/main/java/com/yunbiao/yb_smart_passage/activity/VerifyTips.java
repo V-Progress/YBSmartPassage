@@ -32,6 +32,8 @@ public class VerifyTips {
     public static String CHECK_ING = "正在检测，请稍等... ";
     public static String CHECK_SUCC = "识别成功，请通过";
     public static String CHECK_FAILED = "验证失败，请重试";
+    public static String CHECK_FAILED_EXPIRE = "权限已过期";
+    public static String CHECK_FAILED_NOTINTIME = "不在通行时间内";
 
     public static VerifyTips instance() {
         return verifyTips;
@@ -73,7 +75,7 @@ public class VerifyTips {
      */
     public void showMyTipsDelay() {
         llMainTips.removeCallbacks(showTipsRunnable);
-        llMainTips.postDelayed(showTipsRunnable, 1500);
+        llMainTips.postDelayed(showTipsRunnable, 2000);
     }
 
     /***
@@ -105,7 +107,7 @@ public class VerifyTips {
                     ivHeadTips.startAnimation(rotateAnimation);
                     tvMainTips.setTextColor(Color.WHITE);
                     tvNameTips.setText("");
-                } else if (TextUtils.equals(tips, CHECK_FAILED)) {//如果是检测失败就设置为红色
+                } else if (TextUtils.equals(tips, CHECK_FAILED) || TextUtils.equals(tips,CHECK_FAILED_NOTINTIME) || TextUtils.equals(tips,CHECK_FAILED_EXPIRE)) {//如果是检测失败就设置为红色
                     ivHeadTips.setImageResource(R.mipmap.error_face_frame);
                     tvMainTips.setTextColor(Color.RED);
                     tvNameTips.setText("");
