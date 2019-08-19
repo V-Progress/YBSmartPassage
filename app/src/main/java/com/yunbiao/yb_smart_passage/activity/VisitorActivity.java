@@ -59,8 +59,9 @@ public class VisitorActivity extends BaseActivity {
         initData();
     }
 
-    public void onBack(View view){
-        finish();
+    @Override
+    protected String setTitle() {
+        return "访客列表";
     }
 
     class VisitorAdapter extends BaseAdapter{

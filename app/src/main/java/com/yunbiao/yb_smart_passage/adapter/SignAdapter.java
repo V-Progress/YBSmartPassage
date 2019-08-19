@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 
 import com.yunbiao.yb_smart_passage.R;
-import com.yunbiao.yb_smart_passage.db.PassageBean;
+import com.yunbiao.yb_smart_passage.db2.PassageBean;
 
 import org.xutils.x;
 
@@ -64,17 +64,20 @@ public class SignAdapter extends BaseAdapter {
         PassageBean passageBean=mlist.get(position);
         viewHolder.tv_No.setText(position+1+"");
 
-
-
         viewHolder.tv_date.setText(passageBean.getPassTime()+"");
 
         if (!TextUtils.isEmpty(passageBean.getName())){
             viewHolder.tv_employName.setText(passageBean.getName());
         }
 
-        if (!TextUtils.isEmpty(passageBean.getDepartName())){
-            viewHolder.tv_employJob.setText(passageBean.getDepartName());
+        if (passageBean.getUserType() == 0) {
+            viewHolder.tv_employJob.setText("员工");
+            viewHolder.tv_employJob.setTextColor(Color.WHITE);
+        } else {
+            viewHolder.tv_employJob.setText("访客");
+            viewHolder.tv_employJob.setTextColor(Color.RED);
         }
+
 
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
         viewHolder.tv_date.setText(df.format(passageBean.getPassTime()));
@@ -96,6 +99,7 @@ public class SignAdapter extends BaseAdapter {
     }
 
     class ViewHolder{
+        View root;
         TextView tv_No;
         TextView tv_date;
         TextView tv_employName;
@@ -105,6 +109,7 @@ public class SignAdapter extends BaseAdapter {
 
 
         public ViewHolder(View convertView) {
+            root = convertView.findViewById(R.id.layout_title);
             tv_No= (TextView) convertView.findViewById(R.id.tv_No);
             tv_date= (TextView) convertView.findViewById(R.id.tv_date);
             tv_employName= (TextView) convertView.findViewById(R.id.tv_employName);

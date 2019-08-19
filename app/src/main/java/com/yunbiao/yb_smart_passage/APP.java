@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 
+import com.android.xhapimanager.XHApiManager;
 import com.bumptech.glide.Glide;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
@@ -20,10 +21,8 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.yunbiao.yb_smart_passage.activity.WelComeActivity;
 import com.yunbiao.yb_smart_passage.afinel.Constants;
+import com.yunbiao.yb_smart_passage.business.Speecher;
 import com.yunbiao.yb_smart_passage.db2.DaoManager;
-import com.yunbiao.yb_smart_passage.db.DatabaseHelper;
-import com.yunbiao.yb_smart_passage.db.SignDao;
-import com.yunbiao.yb_smart_passage.db.UserDao;
 import com.yunbiao.yb_smart_passage.exception.CrashHandler2;
 import com.yunbiao.yb_smart_passage.utils.RestartAPPTool;
 import com.yunbiao.yb_smart_passage.utils.SpUtils;
@@ -45,10 +44,9 @@ import okhttp3.OkHttpClient;
 public class APP extends Application {
     private static APP instance;
     private static SmdtManager smdt;
-    private static UserDao userDao;
-    private static SignDao signDao;
     private static int companyId;
     private static WelComeActivity activity;
+    private static XHApiManager xhApiManager;
 
     public static WelComeActivity getActivity() {
         return activity;
@@ -61,11 +59,11 @@ public class APP extends Application {
     public static void initCompanyId() {
         companyId = SpUtils.getInt(SpUtils.COMPANY_ID);
         Constants.DATA_PATH = Constants.CACHE_PATH + companyId + "/data/";
-        Constants.ADS_PATH = Constants.CACHE_PATH + companyId +"/ads/";
-        Constants.HEAD_PATH = Constants.CACHE_PATH + companyId +"/img/";
-        Constants.RECORD_PATH = Constants.CACHE_PATH + companyId +"/rcd/";
-        Constants.MEETING_PATH = Constants.CACHE_PATH + companyId +"/meet/";
-        Constants.INFO_PATH = Constants.CACHE_PATH + companyId +"/info/";
+        Constants.ADS_PATH = Constants.CACHE_PATH + companyId + "/ads/";
+        Constants.HEAD_PATH = Constants.CACHE_PATH + companyId + "/img/";
+        Constants.RECORD_PATH = Constants.CACHE_PATH + companyId + "/rcd/";
+        Constants.MEETING_PATH = Constants.CACHE_PATH + companyId + "/meet/";
+        Constants.INFO_PATH = Constants.CACHE_PATH + companyId + "/info/";
     }
 
     @Override
@@ -74,9 +72,9 @@ public class APP extends Application {
         instance = this;
         initCompanyId();
 
-        DaoManager.get().initDb();
+        initGpio();
 
-        initDB();
+        DaoManager.get().initDb();
 
         cauchException();
 
@@ -85,27 +83,40 @@ public class APP extends Application {
         initUM();
 
         initUtils();
+
+        Speecher.init(this);
     }
 
-    public void initDB(){
-        try {
-            DatabaseHelper.createDatabase(this);
-            userDao = new UserDao(this);
-            signDao = new SignDao(this);
-            Log.e("APP", "11111111111111111111111111111");
-        } catch (Exception e){
-            e.printStackTrace();
-            Log.e("APP", "3333333333333333333333333333333");
+    //IO引脚
+    private int dir_set_io[] = {1, 2, 3, 4};
+    //IO口方向，0：输入，1：输出
+    private int dir_set_import = 0;
+    private int dir_set_export = 1;
+    //高低电平，0：低电平，1：高电平
+    private int dir_set_value = 0;
+    private static final String TAG = "APP";
+
+    private void initGpio() {
+        smdt = SmdtManager.create(this);
+        //设置gpio为输出
+        if (smdt != null) {
+            for (int i = 0; i < dir_set_io.length; i++) {
+                int dirToTemp = smdt.smdtSetGpioDirection(dir_set_io[i], dir_set_export, dir_set_value);
+                if (dirToTemp == 0) {
+                    Log.e(TAG, "initUtils: ----- 设置为输出成功");
+                } else {
+                    Log.e(TAG, "initUtils: ----- 设置为输出失败");
+                }
+            }
+            return;
         }
-        Log.e("APP", "222222222222222222222222222 ");
-    }
 
-    public static UserDao getUserDao() {
-        return userDao;
-    }
+        try{
+            xhApiManager = new XHApiManager();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
-    public static SignDao getSignDao() {
-        return signDao;
     }
 
     // -------------------异常捕获-----捕获异常后重启系统-----------------//
@@ -130,31 +141,11 @@ public class APP extends Application {
         MobclickAgent.setCatchUncaughtExceptions(true);
     }
 
-    //IO引脚
-    private int dir_set_io[] = {1, 2, 3, 4};
-    //IO口方向，0：输入，1：输出
-    private int dir_set_import = 0;
-    private int dir_set_export = 1;
-    //高低电平，0：低电平，1：高电平
-    private int dir_set_value = 0;
-    private static final String TAG = "APP";
     private void initUtils() {
 //        Log2FileUtil.startLogcatManager(this);
 
         //初始化xutils 3.0
         x.Ext.init(this);
-        smdt = SmdtManager.create(this);
-        //设置gpio为输出
-        if(smdt != null){
-            for (int i = 0; i < dir_set_io.length; i++) {
-                int dirToTemp = smdt.smdtSetGpioDirection(dir_set_io[i], dir_set_export, dir_set_value);
-                if (dirToTemp == 0) {
-                    Log.e(TAG, "initUtils: ----- 设置为输出成功");
-                } else {
-                    Log.e(TAG, "initUtils: ----- 设置为输出失败");
-                }
-            }
-        }
 
         OkHttpClient build = new OkHttpClient.Builder()
                 .connectTimeout(60 * 1000, TimeUnit.SECONDS)
@@ -286,6 +277,10 @@ public class APP extends Application {
         return smdt;
     }
 
+    public static XHApiManager getXHApi(){
+        return xhApiManager;
+    }
+
 
     @Override
     public void onLowMemory() {
@@ -299,7 +294,7 @@ public class APP extends Application {
         Glide.get(this).trimMemory(level);
     }
 
-    public static void restart(){
+    public static void restart() {
         RestartAPPTool.restartAPP(getContext());
     }
 

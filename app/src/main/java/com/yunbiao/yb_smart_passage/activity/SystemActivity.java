@@ -32,6 +32,11 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
     private TextView tv_online_system;
 
     @Override
+    protected String setTitle() {
+        return "系统信息";
+    }
+
+    @Override
     protected int getPortraitLayout() {
         return R.layout.activity_system_h;
     }

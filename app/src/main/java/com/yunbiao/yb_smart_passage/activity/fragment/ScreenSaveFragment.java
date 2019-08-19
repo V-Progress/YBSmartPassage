@@ -53,15 +53,6 @@ public class ScreenSaveFragment extends Fragment implements AdsListener {
     private long AUTO_SCREEN_TIME = 10;
     private ObjectAnimator objectAnimator;
 
-//    private TextView tvTemp;
-//    private TextView tvWetness;
-//    private TextView tvVoc;
-//    private TextView tvPm25;
-//    private TextView tvHcho;
-//    private TextView tvCo2;
-//    private AdsSwitcher adsSwitcher;
-//    private View progressBar;
-
     private String cacheAds;
     private View root;
 
@@ -72,14 +63,6 @@ public class ScreenSaveFragment extends Fragment implements AdsListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         EventBus.getDefault().register(this);
         root = inflater.inflate(R.layout.fragment_ads_h, container, false);
-//        tvTemp = root.findViewById(R.id.tv_screen_temperature);
-//        tvCo2 = root.findViewById(R.id.tv_screen_co2);
-//        tvHcho = root.findViewById(R.id.tv_screen_hcho);
-//        tvPm25 = root.findViewById(R.id.tv_screen_pm2_5);
-//        tvVoc = root.findViewById(R.id.tv_screen_voc);
-//        tvWetness = root.findViewById(R.id.tv_screen_wetness);
-//        adsSwitcher = root.findViewById(R.id.ads_switcher);
-//        progressBar = root.findViewById(R.id.ll_progress);
         return root;
     }
 

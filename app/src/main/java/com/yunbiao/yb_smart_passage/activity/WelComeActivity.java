@@ -1,13 +1,8 @@
 package com.yunbiao.yb_smart_passage.activity;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,14 +13,11 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.jdjr.risk.face.local.verify.VerifyResult;
 import com.yunbiao.yb_smart_passage.APP;
 import com.yunbiao.yb_smart_passage.R;
@@ -36,8 +28,11 @@ import com.yunbiao.yb_smart_passage.activity.fragment.ScreenSaveFragment;
 import com.yunbiao.yb_smart_passage.business.LocateManager;
 import com.yunbiao.yb_smart_passage.business.ResourceCleanManager;
 import com.yunbiao.yb_smart_passage.business.PassageManager;
+import com.yunbiao.yb_smart_passage.business.Speecher;
 import com.yunbiao.yb_smart_passage.business.SyncManager;
+import com.yunbiao.yb_smart_passage.business.VerifyTips;
 import com.yunbiao.yb_smart_passage.business.VisitorManager;
+import com.yunbiao.yb_smart_passage.common.UpdateVersionControl;
 import com.yunbiao.yb_smart_passage.db2.PassageBean;
 import com.yunbiao.yb_smart_passage.faceview.FaceResult;
 import com.yunbiao.yb_smart_passage.faceview.FaceView;
@@ -50,8 +45,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-
-import de.hdodenhof.circleimageview.CircleImageView;
+import java.util.Locale;
 
 /**
  * Created by Administrator on 2018/11/26.
@@ -68,6 +62,11 @@ public class WelComeActivity extends BaseGpioActivity {
     //摄像头分辨率
     private FaceView faceView;
     private ScreenSaveFragment adsFragment;
+
+    @Override
+    protected String setTitle() {
+        return null;
+    }
 
     @Override
     protected int getPortraitLayout() {
@@ -103,6 +102,13 @@ public class WelComeActivity extends BaseGpioActivity {
         addFragment(R.id.ll_face_main, adsFragment);
 
         VerifyTips.instance().init(this);
+
+        find(R.id.iv_face_img).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goSetting();
+            }
+        });
     }
 
     @Override
@@ -119,7 +125,7 @@ public class WelComeActivity extends BaseGpioActivity {
             @Override
             public void run() {
                 Log.e(TAG, "run: ------- ");
-//                UpdateVersionControl.getInstance().checkUpdate(WelComeActivity.this);
+                UpdateVersionControl.getInstance().checkUpdate(WelComeActivity.this);
             }
         }, 5 * 1000);
     }
@@ -149,10 +155,9 @@ public class WelComeActivity extends BaseGpioActivity {
             if (mCurrFaceId != faceId) {
                 Log.e(TAG, "onFaceDetection: ----- " + mCurrFaceId + "---" + faceId);
                 mCurrFaceId = faceId;
-
-//                VerifyTips.instance().showMyTipsDelay();
                 VerifyTips.instance().showMyTips(VerifyTips.CHECK_ING);
             }
+            onLight();
             VerifyTips.instance().showFaceLoading();
         }
 
@@ -205,6 +210,7 @@ public class WelComeActivity extends BaseGpioActivity {
         public void onPass(PassageBean passageBean) {
             VerifyTips.instance().showMyTips(passageBean.getUserType(),passageBean.getName(), VerifyTips.CHECK_SUCC,passageBean.getHeadPath());
             openDoor();
+            Speecher.speech("您好 " + passageBean.getName());
         }
 
         @Override

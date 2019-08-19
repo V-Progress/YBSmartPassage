@@ -12,10 +12,12 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.jdjr.risk.face.local.user.FaceUser;
 import com.jdjr.risk.face.local.verify.VerifyResult;
+import com.umeng.commonsdk.debug.D;
 import com.yunbiao.yb_smart_passage.APP;
 import com.yunbiao.yb_smart_passage.Config;
 import com.yunbiao.yb_smart_passage.afinel.Constants;
 import com.yunbiao.yb_smart_passage.afinel.ResourceUpdate;
+import com.yunbiao.yb_smart_passage.bean.BaseResponse;
 import com.yunbiao.yb_smart_passage.db2.PassageBean;
 import com.yunbiao.yb_smart_passage.db2.DaoManager;
 import com.yunbiao.yb_smart_passage.db2.UserBean;
@@ -109,7 +111,6 @@ public class PassageManager {
                         }
                     }
                 }
-
             }
             clearJDVerifyRecord();
         }
@@ -263,6 +264,45 @@ public class PassageManager {
         }
     }
 
+    private void checkUser(final PassageBean passageBean, byte[] imgBytes){
+        d("是员工");
+
+        String faceId = passageBean.getFaceId();
+        List<UserBean> UserBeans = DaoManager.get().queryUserByFaceId(faceId);
+        if(UserBeans == null || UserBeans.size() <= 0){
+            d("库中无此人... ");
+            queryTag++;
+            if(queryTag >= TAG_MAX_TIME){
+                queryTag = 0;
+                mAct.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onVerifyFailed();
+                    }
+                });
+            }
+            return;
+        }
+        queryTag = 0;
+
+        if(!canPass(passageBean)){
+            d("时间未到... ");
+            return;
+        }
+
+        UserBean userBean = UserBeans.get(0);
+        passageBean.setEntryId(userBean.getId());
+        passageBean.setSex(userBean.getSex());
+        passageBean.setName(userBean.getName());
+        passageBean.setUserType(0);
+
+        File imgFile = saveBitmap(passageBean.getPassTime(), imgBytes);
+        passageBean.setHeadPath(imgFile.getPath());
+
+        d("员工通行... " + passageBean.getName() + " --- " + imgFile.getPath());
+        onPass(passageBean);
+    }
+
     private void checkVisitor(final PassageBean passageBean, byte[] imgBytes){
         d("是访客");
 
@@ -314,6 +354,7 @@ public class PassageManager {
         passageBean.setSex(visitorBean.getSex());
         passageBean.setName(visitorBean.getName());
         passageBean.setUserType(-1);
+        passageBean.setVisiId(visitorBean.getId());
 
         File imgFile = saveBitmap(passageBean.getPassTime(), imgBytes);
         passageBean.setHeadPath(imgFile.getPath());
@@ -342,91 +383,62 @@ public class PassageManager {
                 }
             });
         }
+
+        sendPassageRecord(passageBean);
     }
 
-    private void checkUser(final PassageBean passageBean, byte[] imgBytes){
-        d("是员工");
+    private void sendPassageRecord(final PassageBean passageBean){
+        d("准备上传记录... ");
 
-        String faceId = passageBean.getFaceId();
-        List<UserBean> UserBeans = DaoManager.get().queryUserByFaceId(faceId);
-        if(UserBeans == null || UserBeans.size() <= 0){
-            d("库中无此人... ");
-            queryTag++;
-            if(queryTag >= TAG_MAX_TIME){
-                queryTag = 0;
-                mAct.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        listener.onVerifyFailed();
-                    }
-                });
-            }
-            return;
+        Map<String,String> params = new HashMap<>();
+        params.put("deviceNo",HeartBeatClient.getDeviceNo());
+        params.put("comId",SpUtils.getInt(SpUtils.COMPANY_ID) + "");
+
+        String url;
+        if(passageBean.getUserType() != -1){
+            params.put("entryId", passageBean.getId()+"");
+            params.put("similar", passageBean.getSimilar()+"");
+            params.put("card", passageBean.getCard()+"");
+            params.put("isPass", passageBean.getIsPass()+"");
+            url = ResourceUpdate.SIGNLOG;
+        } else {
+            params.put("visitorId",passageBean.getVisiId()+"");
+            url = ResourceUpdate.VISITOR_RECORD;
         }
-        queryTag = 0;
-
-        if(!canPass(passageBean)){
-            d("时间未到... ");
-            return;
-        }
-
-        UserBean userBean = UserBeans.get(0);
-        passageBean.setEntryId(userBean.getId());
-        passageBean.setSex(userBean.getSex());
-        passageBean.setName(userBean.getName());
-        passageBean.setUserType(0);
-
-        File imgFile = saveBitmap(passageBean.getPassTime(), imgBytes);
-        passageBean.setHeadPath(imgFile.getPath());
-
-        d("员工通行... " + passageBean.getName() + " --- " + imgFile.getPath());
-        if (listener != null) {
-            mAct.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    listener.onPass(passageBean);
-                }
-            });
-        }
-    }
-
-    private void sendSignRecord(final PassageBean passageBean) {
-        String deviceNo = HeartBeatClient.getDeviceNo();
-        int comId = SpUtils.getInt(SpUtils.COMPANY_ID);
-        final Map<String, String> params = new HashMap<>();
-        params.put("entryId", passageBean.getId()+"");
-        params.put("similar", passageBean.getSimilar()+"");
-        params.put("card", passageBean.getCard()+"");
-        params.put("isPass", passageBean.getIsPass()+"");
-        params.put("deviceNo", deviceNo+"");
-        params.put("comId", comId+"");
-        PostFormBuilder builder = OkHttpUtils.post().url(ResourceUpdate.SIGNLOG).params(params);
+        d("接口地址：" + url);
+        d("参数：" + params.toString());
+        PostFormBuilder builder = OkHttpUtils.post().url(url).params(params);
 
         String headPath = passageBean.getHeadPath();
         File imgFile = new File(headPath);
         if (imgFile != null && imgFile.exists()) {
             builder.addFile("heads", imgFile.getName(), imgFile);
         }
+        d("文件参数：heades = " + imgFile.getName() + "," + imgFile.getPath());
+
         builder.build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                Log.e(TAG, "onError: " + e != null ? e.getMessage() : "NULL");
+                d("上传记录失败---- " +(e == null?"null":e.getMessage()));
                 passageBean.setUpload(false);
                 DaoManager.get().addOrUpdate(passageBean);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                Log.e(TAG, "onResponse: " + response);
-                JSONObject jsonObject = JSONObject.parseObject(response);
-                String status = jsonObject.getString("status");
-                passageBean.setUpload(TextUtils.equals("1", status));
+                d("上传记录响应---- "+response);
+                if(TextUtils.isEmpty(response)){
+                    return;
+                }
+                BaseResponse baseResponse = new Gson().fromJson(response, BaseResponse.class);
+                if(baseResponse == null){
+                    return;
+                }
+                if(baseResponse.getStatus() != 1){
+                    return;
+                }
+                passageBean.setUpload(true);
                 DaoManager.get().addOrUpdate(passageBean);
-            }
-
-            @Override
-            public void onAfter(int id) {
-
             }
         });
     }

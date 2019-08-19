@@ -2,6 +2,7 @@ package com.yunbiao.yb_smart_passage.activity;
 
 import android.app.DatePickerDialog;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,28 +13,21 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 
-import com.google.gson.Gson;
-import com.yunbiao.yb_smart_passage.APP;
 import com.yunbiao.yb_smart_passage.R;
 import com.yunbiao.yb_smart_passage.activity.base.BaseActivity;
 import com.yunbiao.yb_smart_passage.adapter.SignAdapter;
-import com.yunbiao.yb_smart_passage.db.PassageBean;
-import com.yunbiao.yb_smart_passage.db.SignDao;
+import com.yunbiao.yb_smart_passage.db2.DaoManager;
+import com.yunbiao.yb_smart_passage.db2.PassageBean;
 import com.yunbiao.yb_smart_passage.utils.SdCardUtils;
 import com.yunbiao.yb_smart_passage.utils.ThreadUitls;
 import com.yunbiao.yb_smart_passage.utils.UIUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -48,7 +42,6 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     private ListView lv_sign_List;
     private TextView tv_date;
     private ImageView iv_back;
-    private SignDao signDao;
     private View pb_load_list;
     private TextView tv_load_tips;
 
@@ -64,6 +57,11 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
     private Spinner spnDataMode;
     private DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
     private DateFormat dateFormatter = new SimpleDateFormat("yyyy年MM月dd日");
+
+    @Override
+    protected String setTitle() {
+        return "离线数据";
+    }
 
     @Override
     protected int getPortraitLayout() {
@@ -89,7 +87,6 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     protected void initData() {
-        signDao = APP.getSignDao();
         String today = dateFormatter.format(new Date());
         tv_date.setText(today);
         queryDate = today;
@@ -127,7 +124,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void run() {
                 mShowList.clear();
-                mSignList = signDao.queryByDate(queryDate);
+                mSignList = DaoManager.get().queryByPassDate(queryDate);
                 if (mSignList == null || mSignList.size() <= 0) {
                     runOnUiThread(new Runnable() {
                         @Override

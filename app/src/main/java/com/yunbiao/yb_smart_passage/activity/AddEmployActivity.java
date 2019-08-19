@@ -18,12 +18,10 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import com.yunbiao.yb_smart_passage.APP;
 import com.yunbiao.yb_smart_passage.R;
 import com.yunbiao.yb_smart_passage.activity.base.BaseActivity;
 import com.yunbiao.yb_smart_passage.afinel.Constants;
 import com.yunbiao.yb_smart_passage.afinel.ResourceUpdate;
-import com.yunbiao.yb_smart_passage.db.UserDao;
 import com.yunbiao.yb_smart_passage.faceview.FaceView;
 import com.yunbiao.yb_smart_passage.utils.SpUtils;
 import com.yunbiao.yb_smart_passage.utils.UIUtils;
@@ -72,7 +70,6 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
     private EditText et_job;
 
     private String strFileAdd;
-    private UserDao userDao;
     private MediaPlayer shootMP;
     private View pbTakePhoto;
 
@@ -82,6 +79,11 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
     private EditText etTips;
 
     public static String SCREEN_BASE_PATH = sdPath + "/mnt/sdcard/photo/";
+
+    @Override
+    protected String setTitle() {
+        return "新增员工";
+    }
 
     @Override
     protected int getPortraitLayout() {
@@ -123,8 +125,6 @@ public class AddEmployActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     protected void initData() {
-        userDao = APP.getUserDao();
-
         strFileAdd = "";
 
         rgSex.check(sex == 1 ? R.id.rb_male : R.id.rb_female);

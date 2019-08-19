@@ -25,62 +25,64 @@ public class ExtCameraManager {
         return surfaceCameraManager;
     }
 
-    public void init(TextureView rgbTexture, TextureView nirTexture){
-        rgbTexture.setSurfaceTextureListener(rgbListener);
-        nirTexture.setSurfaceTextureListener(nirListener);
-    }
+//    public void init(TextureView rgbTexture, TextureView nirTexture){
+//        rgbTexture.setSurfaceTextureListener(rgbListener);
+//        nirTexture.setSurfaceTextureListener(nirListener);
+//    }
+//
+//    public void init(TextureView rgbTexture){
+//        rgbTexture.setSurfaceTextureListener(rgbListener);
+//    }
 
-    public void init(TextureView rgbTexture){
-        rgbTexture.setSurfaceTextureListener(rgbListener);
-    }
+//    private TextureView.SurfaceTextureListener rgbListener = new TextureView.SurfaceTextureListener() {
+//        @Override
+//        public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+//            Log.e(TAG, "onSurfaceTextureAvailable: " + CameraType.getNIR());
+//            mRGBCamera = doOpenCamera(CameraType.getNIR(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),surface,mRGBCallback);
+//        }
+//        @Override public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+//        }
+//        @Override public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+//            releaseRGBCamera();
+//            return false;
+//        }
+//        @Override public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+//        }
+//    };
+//    private TextureView.SurfaceTextureListener nirListener = new TextureView.SurfaceTextureListener() {
+//        @Override public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+//            Log.e(TAG, "onSurfaceTextureAvailable: " + CameraType.getRGB());
+//            mNIRCamera = doOpenCamera(CameraType.getRGB(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),surface,mNIRCallback);
+//        }
+//        @Override public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) { }
+//        @Override public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+//            releaseNIRCamera();
+//            return false;
+//        }
+//        @Override public void onSurfaceTextureUpdated(SurfaceTexture surface) { }
+//    };
 
-    private TextureView.SurfaceTextureListener rgbListener = new TextureView.SurfaceTextureListener() {
-        @Override
-        public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-            mRGBCamera = doOpenCamera(CameraType.getRGB(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),surface,mRGBCallback);
-        }
-        @Override public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-        }
-        @Override public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-            releaseRGBCamera();
-            return false;
-        }
-        @Override public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-        }
-    };
-    private TextureView.SurfaceTextureListener nirListener = new TextureView.SurfaceTextureListener() {
-        @Override public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-            mNIRCamera = doOpenCamera(CameraType.getNIR(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),surface,mNIRCallback);
-        }
-        @Override public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) { }
-        @Override public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-            releaseNIRCamera();
-            return false;
-        }
-        @Override public void onSurfaceTextureUpdated(SurfaceTexture surface) { }
-    };
-
-    private Camera doOpenCamera(int cameraType, int cameraPreviewWidth, int cameraPreviewHeight, SurfaceTexture surfaceTexture , Camera.PreviewCallback previewCallback){
-        try{
-            Camera camera = Camera.open(cameraType);
-            camera.setDisplayOrientation(CameraSettings.getCameraDisplayRotation());
-            Camera.Parameters parameters = camera.getParameters();
-            parameters.setPreviewSize(cameraPreviewWidth, cameraPreviewHeight);
-            camera.setParameters(parameters);
-            for (int i = 0; i < 3; i++) {
-                int length = cameraPreviewWidth * cameraPreviewHeight * 3 / 2;
-                camera.addCallbackBuffer(new byte[length]);
-            }
-            camera.setPreviewCallbackWithBuffer(previewCallback);
-            camera.setPreviewTexture(surfaceTexture);
-            camera.startPreview();
-            return camera;
-        }catch (Exception e){
-            e.printStackTrace();
-            Log.d("FaceLocalSystemRGBNIR", "########## doCameraPreview RGB exception");
-        }
-        return null;
-    }
+//    private Camera doOpenCamera(int cameraType, int cameraPreviewWidth, int cameraPreviewHeight, SurfaceTexture surfaceTexture , Camera.PreviewCallback previewCallback){
+//        try{
+//            Camera camera = Camera.open(cameraType);
+//            camera.setDisplayOrientation(CameraSettings.getCameraDisplayRotation());
+//            Camera.Parameters parameters = camera.getParameters();
+//            parameters.setPreviewSize(cameraPreviewWidth, cameraPreviewHeight);
+//            camera.setParameters(parameters);
+//            for (int i = 0; i < 3; i++) {
+//                int length = cameraPreviewWidth * cameraPreviewHeight * 3 / 2;
+//                camera.addCallbackBuffer(new byte[length]);
+//            }
+//            camera.setPreviewCallbackWithBuffer(previewCallback);
+//            camera.setPreviewTexture(surfaceTexture);
+//            camera.startPreview();
+//            return camera;
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            Log.d("FaceLocalSystemRGBNIR", "########## doCameraPreview RGB exception");
+//        }
+//        return null;
+//    }
 
     /***
      * ========================================================================================================================================================
@@ -103,9 +105,9 @@ public class ExtCameraManager {
         nirSurface.getHolder().addCallback(nirCallback);
     }
 
-    public void init(SurfaceView rgbSurface){
-        rgbSurface.getHolder().addCallback(rgbCallback);
-    }
+//    public void init(SurfaceView rgbSurface){
+//        rgbSurface.getHolder().addCallback(rgbCallback);
+//    }
 
     private SurfaceHolder.Callback rgbCallback = new SurfaceHolder.Callback() {
         @Override
@@ -114,7 +116,7 @@ public class ExtCameraManager {
                 mListener.onSurfaceReady();
             }
             releaseRGBCamera();
-            mRGBCamera = doOpenCamera(CameraType.getRGB(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),holder,mRGBCallback);
+            mRGBCamera = doOpenCamera(CameraType.getNIR(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),holder,mRGBCallback);
         }
 
         @Override
@@ -131,7 +133,7 @@ public class ExtCameraManager {
         @Override
         public void surfaceCreated(SurfaceHolder holder) {
             releaseNIRCamera();
-            mNIRCamera = doOpenCamera(CameraType.getNIR(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),holder,mNIRCallback);
+            mNIRCamera = doOpenCamera(CameraType.getRGB(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),holder,mNIRCallback);
         }
 
         @Override

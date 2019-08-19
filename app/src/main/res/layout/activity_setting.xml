@@ -3,42 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/bg_page"
+    android:background="@mipmap/bj"
     android:orientation="vertical"
-    android:paddingTop="15dp"
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
     android:paddingBottom="10dp"
     tools:context=".activity.SettingActivity">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/shape_system_name"
-            android:paddingLeft="25dp"
-            android:paddingTop="10dp"
-            android:paddingRight="25dp"
-            android:paddingBottom="10dp"
-            android:text="系统设置"
-            android:textColor="@color/white"
-            android:textSize="40dp" />
-
-
-        <ImageView
-            android:layout_gravity="right|center_vertical"
-            android:id="@+id/iv_back"
-            android:padding="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:src="@mipmap/icon_back" />
-    </FrameLayout>
+    <include layout="@layout/head_layout"/>
 
     <ScrollView
         android:layout_marginTop="15dp"

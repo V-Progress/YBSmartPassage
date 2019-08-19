@@ -4,6 +4,7 @@ import android.app.smdt.SmdtManager;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.android.xhapimanager.XHApiManager;
 import com.yunbiao.yb_smart_passage.APP;
 import com.yunbiao.yb_smart_passage.activity.Event.GpioEvent;
 import com.yunbiao.yb_smart_passage.activity.Event.OpenDoorTimeEvent;
@@ -15,18 +16,22 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 public abstract class BaseGpioActivity extends BaseActivity {
-    private boolean isOpened = false;//是否已开锁
     private boolean isAlwayOpen = false;//常开
     private Handler timeHanlder = new Handler();
     private SmdtManager smdt;
-    private int CLOSE_DELAY = 15;
-    private Handler checkHandler = new Handler();
+    private int CLOSE_DELAY = 8;
+    private XHApiManager xhApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         smdt = APP.getSmdt();
+        xhApi = APP.getXHApi();
         EventBus.getDefault().register(this);
+        if(smdt == null && xhApi == null){
+            UIUtils.showShort(this,"无法控制门禁，请检查板卡型号");
+        }
     }
 
     protected boolean isAlwayOpen() {
@@ -36,30 +41,15 @@ public abstract class BaseGpioActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        //缓存获取常开状态并设置开门
         isAlwayOpen = SpUtils.getBoolean(SpUtils.DOOR_STATE,false);
         d("update: ----- " + isAlwayOpen);
         if(isAlwayOpen){
-            startCheckHandler(0);
+            startAutoCheck(0);
         } else {
-            close();
+            offGate();
         }
     }
-
-    private void startCheckHandler(long time){
-        checkHandler.removeCallbacks(checkRunnable);
-        checkHandler.postDelayed(checkRunnable,time);
-    }
-
-    private Runnable checkRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if(isAlwayOpen){
-                openDoor();
-            }
-            startCheckHandler(1000);
-        }
-    };
-
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void update(GpioEvent gpioEvent) {
@@ -77,7 +67,7 @@ public abstract class BaseGpioActivity extends BaseActivity {
             openDoor();
         } else {
             UIUtils.showShort(this,"已关闭常开");
-            close();
+            offGate();
         }
     }
 
@@ -89,48 +79,110 @@ public abstract class BaseGpioActivity extends BaseActivity {
         }
     }
 
+    /***
+     * 对外的开门方法
+     */
     protected void openDoor(){
-        open();
+        onGate();
         if(isAlwayOpen){
             return;
         }
-        startOpenDelay();
+        startAutoGate();
     }
 
-    private void open(){
-        if(smdt == null){
-            UIUtils.showTitleTip(this,"无法控制门禁，请检查板卡型号");
-            return;
+    //开门
+    private void onGate(){
+        if(smdt != null){
+            for (int i = 0; i < 3; i++) {
+                int result = smdt.smdtSetExtrnalGpioValue(1, true);
+            }
         }
-        for (int i = 0; i < 3; i++) {
-            int result = smdt.smdtSetExtrnalGpioValue(1, true);
-            isOpened = result == 0;
-        }
-    }
 
-    private void close(){
-        if(smdt == null){
-            UIUtils.showTitleTip(this,"无法控制门禁，请检查板卡型号");
-            return;
-        }
-        for (int i = 0; i < 3; i++) {
-            int result = smdt.smdtSetExtrnalGpioValue(1, false);
-            isOpened = result == 0;
+        if(xhApi != null){
+            xhApi.XHSetGpioValue(5,0);
         }
     }
 
-    protected void startOpenDelay(){
-        timeHanlder.removeCallbacks(runnable);
-        timeHanlder.postDelayed(runnable,CLOSE_DELAY * 1000);
+    //关门
+    private void offGate(){
+        if(smdt != null){
+            for (int i = 0; i < 3; i++) {
+                int result = smdt.smdtSetExtrnalGpioValue(1, false);
+            }
+        }
+
+        if(xhApi != null){
+            xhApi.XHSetGpioValue(5,1);
+        }
     }
 
-    private Runnable runnable = new Runnable() {
+    //开灯
+    protected void onLight(){
+        if(xhApi != null){
+            xhApi.XHSetGpioValue(4,1);
+        }
+        startAutoLight();
+    }
+
+    //关灯
+    private void offLight(){
+        if(xhApi != null){
+            xhApi.XHSetGpioValue(4,0);
+        }
+    }
+
+    /***
+     * 开始执行自动门禁
+     */
+    protected void startAutoGate(){
+        timeHanlder.removeCallbacks(gateControlRunnable);
+        timeHanlder.postDelayed(gateControlRunnable,CLOSE_DELAY * 1000);
+    }
+
+    /***
+     * 开始执行自动灯光
+     */
+    protected void startAutoLight(){
+        timeHanlder.removeCallbacks(lightControlRunnable);
+        timeHanlder.postDelayed(lightControlRunnable,CLOSE_DELAY * 1000);
+    }
+
+    /***
+     * 开始执行自动监测
+     * @param time
+     */
+    private void startAutoCheck(long time){
+        timeHanlder.removeCallbacks(checkRunnable);
+        timeHanlder.postDelayed(checkRunnable,time);
+    }
+
+    //常开状态监测
+    private Runnable checkRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if(isAlwayOpen){
+                openDoor();
+            }
+            startAutoCheck(1000);
+        }
+    };
+
+    //灯光控制
+    private Runnable lightControlRunnable = new Runnable() {
+        @Override
+        public void run() {
+            offLight();
+        }
+    };
+
+    //门禁控制
+    private Runnable gateControlRunnable = new Runnable() {
         @Override
         public void run() {
             if(isAlwayOpen){
                 return;
             }
-            close();
+            offGate();
         }
     };
 

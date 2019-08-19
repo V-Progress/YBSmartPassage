@@ -1,13 +1,8 @@
 package com.yunbiao.yb_smart_passage.db2;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
-
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.annotation.Unique;
-import org.xutils.db.table.DbBase;
 
 /**
  * Created by Administrator on 2018/10/10.
@@ -18,6 +13,8 @@ public class PassageBean {
     protected Long id;
 
     private long entryId;
+
+    private long visiId;
 
     protected String faceId;
 
@@ -36,13 +33,14 @@ public class PassageBean {
 
     private int userType;
 
-    @Generated(hash = 715086318)
-    public PassageBean(Long id, long entryId, String faceId, String headPath,
-            String departName, String similar, int isPass, String name,
-            long passTime, boolean isUpload, String card, int sex,
+    @Generated(hash = 1007810419)
+    public PassageBean(Long id, long entryId, long visiId, String faceId,
+            String headPath, String departName, String similar, int isPass,
+            String name, long passTime, boolean isUpload, String card, int sex,
             String createDate, int userType) {
         this.id = id;
         this.entryId = entryId;
+        this.visiId = visiId;
         this.faceId = faceId;
         this.headPath = headPath;
         this.departName = departName;
@@ -59,6 +57,14 @@ public class PassageBean {
 
     @Generated(hash = 1686457362)
     public PassageBean() {
+    }
+
+    public long getVisiId() {
+        return visiId;
+    }
+
+    public void setVisiId(long visiId) {
+        this.visiId = visiId;
     }
 
     public int getUserType() {

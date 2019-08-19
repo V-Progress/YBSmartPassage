@@ -15,13 +15,10 @@ import android.widget.ImageView;
 import com.jdjr.risk.face.local.detect.BaseProperty;
 import com.jdjr.risk.face.local.extract.FaceProperty;
 import com.jdjr.risk.face.local.verify.VerifyResult;
-import com.yunbiao.yb_smart_passage.APP;
 import com.yunbiao.yb_smart_passage.R;
-import com.yunbiao.yb_smart_passage.db.UserBean;
 import com.yunbiao.yb_smart_passage.faceview.FaceResult;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -130,16 +127,16 @@ public class FaceCanvasView extends ImageView {
             String userId = verifyResult.getUser().getUserId();
             if(!TextUtils.isEmpty(userId)){
                 Integer integer = Integer.valueOf(userId);
-                if (!cacheMap.containsKey(integer)) {//如果缓存里不存在就去查
-                    List<UserBean> userBeans = APP.getUserDao().queryByFaceId(integer);
-                    if(userBeans != null && userBeans.size() > 0){
-                        String name = userBeans.get(0).getName();
-                        cacheMap.put(integer,name);
-                        contentText.append(name);
-                    }
-                } else {//存在就取缓存
-                    contentText.append(cacheMap.get(integer));
-                }
+//                if (!cacheMap.containsKey(integer)) {//如果缓存里不存在就去查
+//                    List<UserBean> userBeans = APP.getUserDao().queryByFaceId(integer);
+//                    if(userBeans != null && userBeans.size() > 0){
+//                        String name = userBeans.get(0).getName();
+//                        cacheMap.put(integer,name);
+//                        contentText.append(name);
+//                    }
+//                } else {//存在就取缓存
+//                    contentText.append(cacheMap.get(integer));
+//                }
             }
         } else {
             if(faceProperty != null){

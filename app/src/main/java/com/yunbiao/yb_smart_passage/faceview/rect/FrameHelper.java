@@ -11,7 +11,7 @@ public class FrameHelper {
         
         final int rotation = CameraSettings.getCameraImageRotation();
         
-        final byte[] frameRotate = FrameHelper.rotateFrame(rotation, frame, width, height);
+        final byte[] frameRotate = rotateFrame(rotation, frame, width, height);
         if (rotation == CameraSettings.ROTATION_90 || rotation == CameraSettings.ROTATION_270) {
             CameraSettings.setCameraWidth(height);
             CameraSettings.setCameraHeight(width);
@@ -23,8 +23,6 @@ public class FrameHelper {
     
     
     private static byte[] rotateFrame(int rotation, byte[] frame, int width, int height) {
-        
-        
         byte[] frameRotate = frame;
         
         if (rotation == CameraSettings.ROTATION_0) {

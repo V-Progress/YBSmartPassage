@@ -15,10 +15,12 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.umeng.analytics.MobclickAgent;
 import com.yunbiao.yb_smart_passage.APP;
+import com.yunbiao.yb_smart_passage.R;
 import com.yunbiao.yb_smart_passage.utils.UIUtils;
 
 import java.util.ArrayList;
@@ -32,6 +34,8 @@ public abstract class BaseActivity extends FragmentActivity {
     protected int mCurrentOrientation;
     protected FragmentManager mFragmentManager;
     private boolean isSupportTouch;
+    private TextView mTvTitle;
+    private View mIvBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +73,30 @@ public abstract class BaseActivity extends FragmentActivity {
             setContentView(landscapeLayout);
         }
 
+        findHeadView();
+
         initView();
 
         initData();
     }
+
+    private void findHeadView(){
+        mTvTitle = find(R.id.tv_title);
+        mIvBack = find(R.id.iv_back);
+        if(mTvTitle != null){
+            mTvTitle.setText(setTitle());
+        }
+        if(mIvBack != null){
+            mIvBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
+    }
+
+    protected abstract String setTitle();
 
     protected <T extends View> T find(@IdRes int id){
         return findViewById(id);

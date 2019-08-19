@@ -6,39 +6,10 @@
     android:background="@mipmap/bj"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
-    android:paddingTop="20dp"
     android:paddingBottom="10dp"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center"
-            android:background="@drawable/shape_system_name"
-            android:paddingLeft="20dp"
-            android:paddingTop="10dp"
-            android:paddingRight="20dp"
-            android:paddingBottom="10dp"
-            android:text="访客列表"
-            android:textColor="@color/white"
-            android:textSize="38dp" />
-
-        <ImageView
-            android:onClick="onBack"
-            android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_gravity="right"
-            android:padding="20dp"
-            android:src="@mipmap/icon_back" />
-
-    </FrameLayout>
+    <include layout="@layout/head_layout"/>
 
     <LinearLayout
         android:layout_marginTop="20dp"

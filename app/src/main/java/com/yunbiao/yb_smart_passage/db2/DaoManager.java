@@ -110,8 +110,6 @@ public class DaoManager {
 
         VisitorBeanDao visitorBeanDao = daoSession.getVisitorBeanDao();
         return visitorBeanDao.queryBuilder().where(VisitorBeanDao.Properties.FaceId.eq(faceId)).unique();
-//        return daoSession.getVisitorBeanDao().queryBuilder().where(VisitorBeanDao.Properties.FaceId.eq(faceId)).unique();
-
     }
 
     public List<PassageBean> queryByPassDate(String date){
@@ -125,7 +123,7 @@ public class DaoManager {
         if(daoSession == null){
             return null;
         }
-        return daoSession.getPassageBeanDao().queryBuilder().where(PassageBeanDao.Properties.IsUpload.eq(String.valueOf(b))).list();
+        return daoSession.getPassageBeanDao().queryBuilder().where(PassageBeanDao.Properties.IsUpload.eq(b)).list();
     }
 
     public <T>long delete(T t){
@@ -143,4 +141,5 @@ public class DaoManager {
         daoSession.deleteAll(clazz);
         return SUCCESS;
     }
+
 }

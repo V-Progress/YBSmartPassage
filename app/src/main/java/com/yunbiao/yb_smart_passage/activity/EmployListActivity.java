@@ -51,6 +51,11 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
     private View avlLoading;
 
     @Override
+    protected String setTitle() {
+        return "员工列表";
+    }
+
+    @Override
     protected int getPortraitLayout() {
         return R.layout.activity_employlist_h;
     }

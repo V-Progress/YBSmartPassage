@@ -32,6 +32,11 @@ public class SplashActivity extends BaseActivity {
     private View ivBg;
 
     @Override
+    protected String setTitle() {
+        return null;
+    }
+
+    @Override
     protected int getPortraitLayout() {
         return R.layout.activity_splash;
     }
@@ -64,7 +69,6 @@ public class SplashActivity extends BaseActivity {
             public void onFinish(boolean isComplete) {
                 if(isComplete){
                     APP.getContext().cauchException();
-                    APP.getContext().initDB();
                     startActivity(new Intent(SplashActivity.this, WelComeActivity.class));
                     overridePendingTransition(0,0);
                     finish();

@@ -65,7 +65,7 @@ android {
     }
     //greenDao配置信息
     greendao {
-        schemaVersion 7//<--数据库的版本，用于升级时候进行更改
+        schemaVersion 8//<--数据库的版本，用于升级时候进行更改
         daoPackage 'com.yunbiao.yb_smart_passage.db2'//这个是生成DAOs、DaoMaster、DaoSession代码保存的包名,默认为entities所在包名
         targetGenDir 'src/main/java'//生成DAOs、DaoMaster、DaoSession的目录。默认为build/generated/source/greendao
     }
@@ -86,7 +86,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compileOnly files('lib/classes4.2.jar')
-//    implementation files('libs/smdt.jar')
+    //    implementation files('libs/smdt.jar')
     implementation files('libs/smdt_v5.1.jar')
     implementation files('libs/BaiduLBS_Android.jar')
     implementation files('libs/gson-2.8.5.jar')
@@ -94,7 +94,9 @@ dependencies {
     implementation 'com.roger.match.library:library:1.0.1'
     implementation 'com.android.support:appcompat-v7:28+'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    implementation 'com.j256.ormlite:ormlite-android:4.48'
+
+//    implementation 'com.j256.ormlite:ormlite-android:4.48'
+    
     implementation 'org.greenrobot:eventbus:3.0.0'
     implementation 'com.alibaba:fastjson:1.2.49'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
@@ -131,8 +133,8 @@ dependencies {
     //炫酷文字
     //    compile 'androidx.annotation:annotation:1.0.0'
     //    compile 'com.tencent.bugly:crashreport:latest.release'
-
     // GreenDao(√)
     implementation 'org.greenrobot:greendao:3.2.2'
     implementation 'com.github.yuweiguocn:GreenDaoUpgradeHelper:v1.4.0'
+    implementation files('libs/XHApi.jar')
 }

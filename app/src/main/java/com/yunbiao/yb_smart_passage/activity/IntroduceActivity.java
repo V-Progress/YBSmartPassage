@@ -44,6 +44,11 @@ public class IntroduceActivity extends BaseActivity implements View.OnClickListe
     private TextView tvIndicator;
 
     @Override
+    protected String setTitle() {
+        return null;
+    }
+
+    @Override
     protected int getPortraitLayout() {
         return R.layout.fragment_introduce;
     }

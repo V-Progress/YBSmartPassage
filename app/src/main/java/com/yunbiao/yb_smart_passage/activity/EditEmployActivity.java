@@ -19,14 +19,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 
-import com.bumptech.glide.Glide;
-import com.yunbiao.yb_smart_passage.APP;
 import com.yunbiao.yb_smart_passage.R;
 import com.yunbiao.yb_smart_passage.activity.base.BaseActivity;
 import com.yunbiao.yb_smart_passage.afinel.Constants;
 import com.yunbiao.yb_smart_passage.afinel.ResourceUpdate;
-import com.yunbiao.yb_smart_passage.db.UserBean;
-import com.yunbiao.yb_smart_passage.db.UserDao;
 import com.yunbiao.yb_smart_passage.faceview.FaceView;
 import com.yunbiao.yb_smart_passage.utils.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -73,7 +69,6 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
     private EditText et_job;
 
     private String strFileAdd;
-    private UserDao userDao;
     private MediaPlayer shootMP;
     private View pbTakePhoto;
     private Bitmap currFaceBitmap = null;
@@ -85,10 +80,14 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
     private RadioGroup rgSex;
     private CheckBox cbStat;
     private EditText etTips;
-    private UserBean userBean;
 
     private int sex = 1;
     private int isStat = 0;
+
+    @Override
+    protected String setTitle() {
+        return "编辑员工";
+    }
 
     @Override
     protected int getPortraitLayout() {
@@ -127,7 +126,6 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
 
     @Override
     protected void initData() {
-        userDao = APP.getUserDao();
         faceId = getIntent().getIntExtra("faceId",-1);
         if(faceId == -1){
             UIUtils.showLong(this,"获取数据失败，请重试");
@@ -135,14 +133,14 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
             return;
         }
 
-        List<UserBean> userBeans = userDao.queryByFaceId(faceId);
-        if(userBeans == null || userBeans.size() <= 0){
-            UIUtils.showLong(this,"获取数据失败，请重试");
-            finish();
-            return;
-        }
-
-        userBean = userBeans.get(0);
+//        List<UserBean> userBeans = userDao.queryByFaceId(faceId);todo
+//        if(userBeans == null || userBeans.size() <= 0){
+//            UIUtils.showLong(this,"获取数据失败，请重试");
+//            finish();
+//            return;
+//        }
+//
+//        userBean = userBeans.get(0);
 
 //        isStat = userBean.getIsStat();
 //
@@ -153,7 +151,7 @@ public class EditEmployActivity extends BaseActivity implements View.OnClickList
 //        cbStat.setChecked(userBean.getIsStat() == 1);
 //        etTips.setText(userBean.getTips());
 //        etTips.setHint(userBean.getIsStat() == 1 ? Constants.DEFALUT_LEADER_TIPS : Constants.DEFALUT_TIPS);
-        Glide.with(this).load(userBean.getHeadPath()).skipMemoryCache(true).crossFade(300).into(iv_capture);
+//        Glide.with(this).load(userBean.getHeadPath()).skipMemoryCache(true).crossFade(300).into(iv_capture);
 
         rgSex.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override

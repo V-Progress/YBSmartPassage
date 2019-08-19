@@ -80,6 +80,11 @@ public class SettingActivity extends BaseActivity {
     private Switch swAlready;
 
     @Override
+    protected String setTitle() {
+        return "系统设置";
+    }
+
+    @Override
     protected int getPortraitLayout() {
         return R.layout.activity_setting;
     }
