@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/black"
+    android:layout_height="match_parent"
+    tools:context=".activity.CaptureActivity">
+
+    <com.yunbiao.yb_smart_passage.faceview.FaceView
+        android:id="@+id/face_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <FrameLayout
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="60dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <Button
+            android:onClick="takePhoto"
+            android:id="@+id/btn_TakePhoto"
+            android:textSize="36dp"
+            android:textColor="@color/white"
+            android:text="点击拍照"
+            android:background="@mipmap/bg_face_frame"
+            android:layout_width="200dp"
+            android:layout_height="200dp" />
+
+        <com.wang.avi.AVLoadingIndicatorView
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:id="@+id/alv_take_photo"
+            android:layout_width="200dp"
+            android:layout_height="150dp" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:background="@mipmap/bg_page"
+        android:id="@+id/ll_preview"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_weight="4"
+            android:id="@+id/iv_capture"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+
+        <LinearLayout
+            android:gravity="center"
+            android:layout_weight="2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <Button
+                android:id="@+id/btn_retry"
+                android:layout_marginRight="50dp"
+                android:paddingTop="30dp"
+                android:paddingBottom="30dp"
+                android:paddingLeft="70dp"
+                android:paddingRight="70dp"
+                android:textSize="30dp"
+                android:text="重拍"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/btn_ok"
+                android:layout_marginLeft="50dp"
+                android:paddingTop="30dp"
+                android:paddingBottom="30dp"
+                android:paddingLeft="70dp"
+                android:paddingRight="70dp"
+                android:textSize="30dp"
+                android:text="保存"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -65,9 +65,11 @@ android {
     }
     //greenDao配置信息
     greendao {
-        schemaVersion 8//<--数据库的版本，用于升级时候进行更改
-        daoPackage 'com.yunbiao.yb_smart_passage.db2'//这个是生成DAOs、DaoMaster、DaoSession代码保存的包名,默认为entities所在包名
-        targetGenDir 'src/main/java'//生成DAOs、DaoMaster、DaoSession的目录。默认为build/generated/source/greendao
+        schemaVersion 12//<--数据库的版本，用于升级时候进行更改
+        daoPackage 'com.yunbiao.yb_smart_passage.db2'
+//这个是生成DAOs、DaoMaster、DaoSession代码保存的包名,默认为entities所在包名
+        targetGenDir 'src/main/java'
+//生成DAOs、DaoMaster、DaoSession的目录。默认为build/generated/source/greendao
     }
 
 }
@@ -90,13 +92,12 @@ dependencies {
     implementation files('libs/smdt_v5.1.jar')
     implementation files('libs/BaiduLBS_Android.jar')
     implementation files('libs/gson-2.8.5.jar')
-    //友盟
     implementation 'com.roger.match.library:library:1.0.1'
     implementation 'com.android.support:appcompat-v7:28+'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
 //    implementation 'com.j256.ormlite:ormlite-android:4.48'
-    
+
     implementation 'org.greenrobot:eventbus:3.0.0'
     implementation 'com.alibaba:fastjson:1.2.49'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
@@ -105,11 +106,11 @@ dependencies {
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation 'org.xutils:xutils:3.3.36'
     //bugly
-    implementation 'com.tencent.bugly:crashreport_upgrade:latest.release'
-    implementation 'com.tencent.bugly:nativecrashreport:latest.release'
+//    implementation 'com.tencent.bugly:crashreport_upgrade:latest.release'
+//    implementation 'com.tencent.bugly:nativecrashreport:latest.release'
     //umeng
-    implementation 'com.umeng.umsdk:analytics:7.5.4'
-    implementation 'com.umeng.umsdk:common:1.5.4'
+//    implementation 'com.umeng.umsdk:analytics:7.5.4'
+//    implementation 'com.umeng.umsdk:common:1.5.4'
     implementation 'com.zhy:okhttputils:2.6.2'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     //京东人脸库

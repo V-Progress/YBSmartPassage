@@ -26,11 +26,29 @@ public class UIUtils {
 
     private static android.widget.Toast mToast;
 
+    public static void showNoCheck(final Activity context, final String message){
+        if(mTipsToast != null){
+            mTipsToast.cancel();
+            mTipsToast = null;
+        }
+        if(mToast != null){
+            mToast.cancel();
+            mToast = null;
+        }
+        mToast = new android.widget.Toast(context);
+        View toastView = View.inflate(context, R.layout.layout_toast, null);
+        TextView tvToast = (TextView) toastView.findViewById(R.id.tv_toast);
+        tvToast.setText(message);
+        mToast.setView(toastView);
+        mToast.setGravity(Gravity.CENTER,0,0);
+        mToast.setDuration(3 * 1000);
+        mToast.show();
+    }
+
     public static void show(final Activity context, final String message, final int time){
         if(context == null){
             return;
         }
-
         context.runOnUiThread(new Runnable() {
             @Override
             public void run() {

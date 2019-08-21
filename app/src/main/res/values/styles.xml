@@ -113,4 +113,28 @@
         <item name="android:textSize">32dp</item>
         <item name="android:text">暂无</item>
     </style>
+
+    <style name="lable_edit_info">
+        <item name="android:layout_marginTop">26dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@color/font_green</item>
+        <item name="android:textSize">28dp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="input_edit_info">
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:layout_marginTop">26dp</item>
+        <item name="android:textColorHint">#ACABAB</item>
+        <item name="android:layout_width">400dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@mipmap/bg_edit</item>
+        <item name="android:textColor">@color/font_green</item>
+        <item name="android:textSize">26dp</item>
+    </style>
+
+
 </resources>

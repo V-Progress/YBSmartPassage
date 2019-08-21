@@ -199,11 +199,14 @@ public class WelComeActivity extends BaseGpioActivity {
     private PassageManager.SignEventListener signEventListener = new PassageManager.SignEventListener() {
         @Override
         public void onNotTime(int timeTag, PassageBean passageBean) {
+            String tips;
             if(timeTag == -1){
-                VerifyTips.instance().showMyTips(VerifyTips.CHECK_FAILED_NOTINTIME);
+                tips = VerifyTips.CHECK_FAILED_NOTINTIME;
             } else {
-                VerifyTips.instance().showMyTips(VerifyTips.CHECK_FAILED_EXPIRE);
+                tips = VerifyTips.CHECK_FAILED_EXPIRE;
             }
+            VerifyTips.instance().showMyTips(tips);
+            Speecher.speech(tips);
         }
 
         @Override
@@ -216,6 +219,7 @@ public class WelComeActivity extends BaseGpioActivity {
         @Override
         public void onVerifyFailed() {
             VerifyTips.instance().showMyTips(VerifyTips.CHECK_FAILED);
+            Speecher.speech(VerifyTips.CHECK_FAILED);
         }
     };
 

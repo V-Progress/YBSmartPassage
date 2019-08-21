@@ -18,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.umeng.analytics.MobclickAgent;
 import com.yunbiao.yb_smart_passage.APP;
 import com.yunbiao.yb_smart_passage.R;
 import com.yunbiao.yb_smart_passage.utils.UIUtils;
@@ -147,13 +146,11 @@ public abstract class BaseActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        MobclickAgent.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        MobclickAgent.onPause(this);
     }
 
     @Override

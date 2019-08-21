@@ -20,25 +20,25 @@ public class UserBean{
     protected String headPath;
 
     private int downloadTag;
-    private int departId;
+    private long departId;
     private String departName;
     private String autograph;
     private String birthday;
     private String cardId;
     private String head;
     private String name;
-
+    private int age;
     private String number;
 
     private String position;
 
     private int sex;
 
-    @Generated(hash = 100668937)
+    @Generated(hash = 1408250595)
     public UserBean(long id, String faceId, String headPath, int downloadTag,
-            int departId, String departName, String autograph, String birthday,
-            String cardId, String head, String name, String number, String position,
-            int sex) {
+            long departId, String departName, String autograph, String birthday,
+            String cardId, String head, String name, int age, String number,
+            String position, int sex) {
         this.id = id;
         this.faceId = faceId;
         this.headPath = headPath;
@@ -50,6 +50,7 @@ public class UserBean{
         this.cardId = cardId;
         this.head = head;
         this.name = name;
+        this.age = age;
         this.number = number;
         this.position = position;
         this.sex = sex;
@@ -63,6 +64,7 @@ public class UserBean{
     public String toString() {
         return "UserBean{" +
                 "id=" + id +
+                ", faceId='" + faceId + '\'' +
                 ", headPath='" + headPath + '\'' +
                 ", downloadTag=" + downloadTag +
                 ", departId=" + departId +
@@ -70,13 +72,21 @@ public class UserBean{
                 ", autograph='" + autograph + '\'' +
                 ", birthday='" + birthday + '\'' +
                 ", cardId='" + cardId + '\'' +
-                ", faceId=" + faceId +
                 ", head='" + head + '\'' +
                 ", name='" + name + '\'' +
+                ", age=" + age +
                 ", number='" + number + '\'' +
                 ", position='" + position + '\'' +
                 ", sex=" + sex +
                 '}';
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 
     public long getId() {
@@ -103,11 +113,11 @@ public class UserBean{
         this.downloadTag = downloadTag;
     }
 
-    public int getDepartId() {
+    public long getDepartId() {
         return this.departId;
     }
 
-    public void setDepartId(int departId) {
+    public void setDepartId(long departId) {
         this.departId = departId;
     }
 

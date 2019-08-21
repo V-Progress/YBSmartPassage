@@ -32,10 +32,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /><!-- 弹窗权限 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- 弹窗权限 -->
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
-
     <uses-permission android:name="android.permission.RECORD_VIDEO" /> <!-- 关闭应用程序的权限 -->
     <uses-permission android:name="android.permission.RESTART_PACKAGES" /> <!-- 人脸识别 -->
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
@@ -45,81 +43,78 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
-        android:name="com.yunbiao.yb_smart_passage.APP"
+        android:name=".APP"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:hardwareAccelerated="true"
         tools:replace="label,allowBackup">
-        <activity android:name="com.yunbiao.yb_smart_passage.activity.SettingActivity" />
+        <activity android:name=".activity.CaptureActivity"></activity>
+        <activity android:name=".activity.EditInfoActivity" />
+        <activity android:name=".activity.SettingActivity" />
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="xKjZ2Yn9ms9FuRVv1k0IGj3clhaGUIkV" />
 
         <activity
-            android:name="com.yunbiao.yb_smart_passage.SplashActivity"
-            android:theme="@android:style/Theme.Translucent"
-            android:launchMode="singleInstance">
+            android:name=".SplashActivity"
+            android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.Translucent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
-                 <!--<category android:name="android.intent.category.HOME" />-->
-                 <!--<category android:name="android.intent.category.DEFAULT" />-->
+                <!-- <category android:name="android.intent.category.HOME" /> -->
+                <!-- <category android:name="android.intent.category.DEFAULT" /> -->
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name="com.yunbiao.yb_smart_passage.activity.WelComeActivity"
+            android:name=".activity.WelComeActivity"
             android:launchMode="singleTask" />
-
-        <activity android:name="com.yunbiao.yb_smart_passage.activity.AddEmployActivity" />
-        <activity android:name="com.yunbiao.yb_smart_passage.activity.EmployListActivity" />
-        <activity android:name="com.yunbiao.yb_smart_passage.activity.EditEmployActivity" />
-        <activity android:name="com.yunbiao.yb_smart_passage.activity.SignActivity" /> <!-- 开机自动重启 -->
-        <activity android:name="com.yunbiao.yb_smart_passage.activity.SystemActivity" />
-        <activity android:name="com.yunbiao.yb_smart_passage.activity.IntroduceActivity" />
-        <activity android:name="com.yunbiao.yb_smart_passage.activity.VisitorActivity" />
+        <activity android:name=".activity.AddEmployActivity" />
+        <activity android:name=".activity.EmployListActivity" />
+        <activity android:name=".activity.EditEmployActivity" />
+        <activity android:name=".activity.SignActivity" /> <!-- 开机自动重启 -->
+        <activity android:name=".activity.SystemActivity" />
+        <activity android:name=".activity.IntroduceActivity" />
+        <activity android:name=".activity.VisitorActivity" />
         <activity
             android:name="com.tencent.bugly.beta.ui.BetaActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|locale"
             android:theme="@android:style/Theme.Translucent" />
         <activity
-            android:name="com.yunbiao.yb_smart_passage.xmpp.NotificationDetailsActivity"
+            android:name=".xmpp.NotificationDetailsActivity"
             android:label="Notification Details" />
         <activity
-            android:name="com.yunbiao.yb_smart_passage.xmpp.NotificationSettingsActivity"
+            android:name=".xmpp.NotificationSettingsActivity"
             android:label="Notification Settings" />
 
         <service android:name="com.huashi.otg.sdk.HsOtgService" />
 
-        <receiver android:name="com.yunbiao.yb_smart_passage.receiver.USBBroadcastReceiver">
+        <receiver android:name=".receiver.USBBroadcastReceiver">
             <intent-filter android:priority="800">
                 <action android:name="android.hardware.usb.action.USB_STATE" />
             </intent-filter>
         </receiver>
-
-        <receiver android:name="com.yunbiao.yb_smart_passage.receiver.BootRestartReceiver">
+        <receiver android:name=".receiver.BootRestartReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </receiver>
-
-        <receiver android:name="com.yunbiao.yb_smart_passage.receiver.DateChangedReceiver">
+        <receiver android:name=".receiver.DateChangedReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.DATE_CHANGED" />
             </intent-filter>
         </receiver>
 
-        <service android:name="com.yunbiao.yb_smart_passage.utils.killSelfService" />
-
-        <service android:name="com.yunbiao.yb_smart_passage.xmpp.NotificationService" /> <!-- <service android:name=".heartbeat.MyProtectService"></service> -->
+        <service android:name=".utils.killSelfService" />
+        <service android:name=".xmpp.NotificationService" /> <!-- <service android:name=".heartbeat.MyProtectService"></service> -->
         <!-- 百度定位 -->
         <service
             android:name="com.baidu.location.f"

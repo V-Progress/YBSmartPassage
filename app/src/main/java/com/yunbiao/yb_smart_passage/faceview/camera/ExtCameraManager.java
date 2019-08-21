@@ -263,4 +263,44 @@ public class ExtCameraManager {
         void onSurfaceReady();
     }
 
+    private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {
+        final double ASPECT_TOLERANCE = 0.1;//相位公差
+        double targetRatio = (double) w / h;//目标比例
+        if (sizes == null) return null;//如果传的尺寸为空就结束
+        Camera.Size optimalSize = null;//最佳分辨率
+        double minDiff = Double.MAX_VALUE;//最小差异值
+        int targetHeight = h;//目标高度为传入的高度
+        // Try to find an size match aspect ratio and size
+        for (Camera.Size size : sizes) {//循环当前支持的size
+            double ratio = (double) size.width / size.height;//得出比例
+            if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) continue;//当前比例减去目标比例，如果大于相位公差则表示差距过大，不可用
+            if (Math.abs(size.height - targetHeight) < minDiff) {//如果小于相位公差
+                optimalSize = size;//则设置最佳尺寸
+                minDiff = Math.abs(size.height - targetHeight); //最小差异值修改
+            }
+        }
+        // Cannot find the one match the aspect ratio, ignore the requirement
+        if (optimalSize == null) {//如果最佳尺寸为空
+            minDiff = Double.MAX_VALUE;//最小差异改为最大
+            for (Camera.Size size : sizes) {
+                if (Math.abs(size.height - targetHeight) < minDiff) {
+                    optimalSize = size;
+                    minDiff = Math.abs(size.height - targetHeight);
+                }
+            }
+        }
+        return optimalSize;
+    }
+
+//    @Override
+//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+//// We purposely disregard child measurements because act as a
+//// wrapper to a SurfaceView that centers the camera preview instead
+//// of stretching it.
+//        final int width = resolveSize(getSuggestedMinimumWidth(), widthMeasureSpec);
+//        final int height = resolveSize(getSuggestedMinimumHeight(), heightMeasureSpec);
+//        setMeasuredDimension(width, height);
+//        if (mSupportedPreviewSizes != null) {
+//            mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, Math.max(width, height), Math.min(width, height));
+//        }
 }

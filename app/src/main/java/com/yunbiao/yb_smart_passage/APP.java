@@ -2,23 +2,12 @@ package com.yunbiao.yb_smart_passage;
 
 import android.app.Application;
 import android.app.smdt.SmdtManager;
-import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 
 import com.android.xhapimanager.XHApiManager;
 import com.bumptech.glide.Glide;
-import com.tencent.bugly.Bugly;
-import com.tencent.bugly.beta.Beta;
-import com.tencent.bugly.beta.UpgradeInfo;
-import com.tencent.bugly.beta.download.DownloadListener;
-import com.tencent.bugly.beta.download.DownloadTask;
-import com.tencent.bugly.beta.upgrade.UpgradeListener;
-import com.tencent.bugly.crashreport.CrashReport;
-import com.umeng.analytics.MobclickAgent;
-import com.umeng.commonsdk.UMConfigure;
 import com.yunbiao.yb_smart_passage.activity.WelComeActivity;
 import com.yunbiao.yb_smart_passage.afinel.Constants;
 import com.yunbiao.yb_smart_passage.business.Speecher;
@@ -31,10 +20,8 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import org.xutils.x;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -78,11 +65,11 @@ public class APP extends Application {
 
         cauchException();
 
-        initBugly();
+//        initBugly();
+//
+//        initUM();
 
-        initUM();
-
-        initUtils();
+        initHttp();
 
         Speecher.init(this);
     }
@@ -103,9 +90,9 @@ public class APP extends Application {
             for (int i = 0; i < dir_set_io.length; i++) {
                 int dirToTemp = smdt.smdtSetGpioDirection(dir_set_io[i], dir_set_export, dir_set_value);
                 if (dirToTemp == 0) {
-                    Log.e(TAG, "initUtils: ----- 设置为输出成功");
+                    Log.e(TAG, "initHttp: ----- 设置为输出成功");
                 } else {
-                    Log.e(TAG, "initUtils: ----- 设置为输出失败");
+                    Log.e(TAG, "initHttp: ----- 设置为输出失败");
                 }
             }
             return;
@@ -119,31 +106,7 @@ public class APP extends Application {
 
     }
 
-    // -------------------异常捕获-----捕获异常后重启系统-----------------//
-    public void cauchException() {
-        CrashHandler2.CrashUploader uploader = new CrashHandler2.CrashUploader() {
-            @Override
-            public void uploadCrashMessage(ConcurrentHashMap<String, Object> info, Throwable ex) {
-                ex.printStackTrace();
-                Log.e("APP", "uploadCrashMessage: -------------------");
-                CrashReport.postCatchedException(ex);
-                MobclickAgent.reportError(APP.getContext(), ex);
-
-//                RestartAPPTool.restartAPP(APP.getContext());
-            }
-        };
-        CrashHandler2.getInstance().init(this, uploader, null);
-    }
-
-    private void initUM() {
-        UMConfigure.init(this, "5cbe87a60cafb210460006b3", "self", UMConfigure.DEVICE_TYPE_BOX, null);
-        UMConfigure.setLogEnabled(false);
-        MobclickAgent.setCatchUncaughtExceptions(true);
-    }
-
-    private void initUtils() {
-//        Log2FileUtil.startLogcatManager(this);
-
+    private void initHttp() {
         //初始化xutils 3.0
         x.Ext.init(this);
 
@@ -154,6 +117,28 @@ public class APP extends Application {
                 .retryOnConnectionFailure(true)
                 .build();
         OkHttpUtils.initClient(build);
+    }
+
+    // -------------------异常捕获-----捕获异常后重启系统-----------------//
+    public void cauchException() {
+        CrashHandler2.CrashUploader uploader = new CrashHandler2.CrashUploader() {
+            @Override
+            public void uploadCrashMessage(ConcurrentHashMap<String, Object> info, Throwable ex) {
+                ex.printStackTrace();
+                Log.e("APP", "uploadCrashMessage: -------------------");
+//                CrashReport.postCatchedException(ex);
+//                MobclickAgent.reportError(APP.getContext(), ex);
+
+//                RestartAPPTool.restartAPP(APP.getContext());
+            }
+        };
+        CrashHandler2.getInstance().init(this, uploader, null);
+    }
+
+    /*private void initUM() {
+        UMConfigure.init(this, "5cbe87a60cafb210460006b3", "self", UMConfigure.DEVICE_TYPE_BOX, null);
+        UMConfigure.setLogEnabled(false);
+        MobclickAgent.setCatchUncaughtExceptions(true);
     }
 
     private void initBugly() {
@@ -193,7 +178,7 @@ public class APP extends Application {
     }
 
     private void setUpgrade() {
-        /**** Beta高级设置*****/
+        *//**** Beta高级设置*****//*
         Beta.autoInit = true;//是否自动启动初始化
         Beta.autoCheckUpgrade = false;//是否自动检查升级
         Beta.initDelay = 1 * 1000;//检查周期
@@ -204,9 +189,9 @@ public class APP extends Application {
         Beta.storageDir = new File(Constants.CACHE_PATH);//更新资源保存目录
         Beta.showInterruptedStrategy = false;//点击过确认的弹窗在APP下次启动自动检查更新时会再次显示
         Beta.autoDownloadOnWifi = true;//WIFI自动下载
-        /**
+        *//**
          * 自定义Activity参考，通过回调接口来跳转到你自定义的Actiivty中。
-         */
+         *//*
         Beta.upgradeListener = new UpgradeListener() {
             @Override
             public void onUpgrade(int ret, UpgradeInfo strategy, boolean isManual, boolean isSilence) {
@@ -237,8 +222,7 @@ public class APP extends Application {
 
             }
         });
-
-    }
+    }*/
 
     /**
      * 获取进程号对应的进程名

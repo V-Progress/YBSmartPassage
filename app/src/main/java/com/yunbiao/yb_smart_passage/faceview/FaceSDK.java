@@ -24,7 +24,6 @@ public class FaceSDK {
     private static FaceSDK instance = new FaceSDK();
     private Context mContext;
     private String captureDir;
-    private Map<String, FaceUser> faceMap;
 
     public static FaceSDK instance(){
         return instance;
@@ -142,7 +141,7 @@ public class FaceSDK {
     }
 
     public Map<String,FaceUser> getAllFaceData(){
-        faceMap = new HashMap<>();
+        Map<String,FaceUser> faceMap = new HashMap<>();
         List<FaceUser> allUsersSync = FaceUserManager.getAllUsersSync(mContext);
         for (FaceUser faceUser : allUsersSync) {
             faceMap.put(faceUser.getUserId(),faceUser);
@@ -179,11 +178,10 @@ public class FaceSDK {
     }
 
     public boolean removeUser(String userId){
-        if(!TextUtils.isEmpty(userId) && faceMap != null){
-            if (faceMap.containsKey(userId)) {
-                FaceUser faceUser = faceMap.get(userId);
-                return FaceUserManager.getInstance().removeUserSync(mContext,faceUser);
-            }
+        Map<String, FaceUser> allFaceData = getAllFaceData();
+        if(allFaceData.containsKey(userId)){
+            FaceUser faceUser = allFaceData.get(userId);
+            return FaceUserManager.getInstance().removeUserSync(mContext,faceUser);
         }
         return false;
     }

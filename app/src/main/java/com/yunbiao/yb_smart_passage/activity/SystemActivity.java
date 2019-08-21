@@ -115,7 +115,9 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
                 startActivity(new Intent(this, EmployListActivity.class));
                 break;
             case R.id.btn_add_system:
-                startActivity(new Intent(this, AddEmployActivity.class));
+                Intent intent = new Intent(this, EditInfoActivity.class);
+                intent.putExtra(EditInfoActivity.TYPE_KEY,EditInfoActivity.TYPE_ADD);
+                startActivity(intent);
                 break;
             case R.id.btn_data_system:
                 startActivity(new Intent(this, SignActivity.class));

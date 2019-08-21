@@ -1,19 +1,28 @@
 package com.yunbiao.yb_smart_passage.activity;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.wang.avi.AVLoadingIndicatorView;
 import com.yunbiao.yb_smart_passage.R;
 import com.yunbiao.yb_smart_passage.activity.base.BaseActivity;
 import com.yunbiao.yb_smart_passage.adapter.EmployAdapter;
 import com.yunbiao.yb_smart_passage.afinel.ResourceUpdate;
 import com.yunbiao.yb_smart_passage.business.SyncManager;
 import com.yunbiao.yb_smart_passage.db2.DaoManager;
+import com.yunbiao.yb_smart_passage.db2.DepartBean;
 import com.yunbiao.yb_smart_passage.db2.UserBean;
 import com.yunbiao.yb_smart_passage.faceview.FaceSDK;
 import com.yunbiao.yb_smart_passage.utils.UIUtils;
@@ -31,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 import okhttp3.Call;
+import okhttp3.Request;
 
 /**
  * Created by Administrator on 2018/8/7.
@@ -83,7 +93,7 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
 
     @Override
     protected void initData() {
-         employList=new ArrayList<>();
+        employList=new ArrayList<>();
         employAdapter=new EmployAdapter(this,employList);
         employAdapter.setOnEmpDeleteListener(this);
         employAdapter.setOnEmpEditListener(this);
@@ -147,6 +157,11 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
                 map.put("entryId", userBean.getId()+"");
                 OkHttpUtils.post().url(ResourceUpdate.DELETESTAFF).params(map).build().execute(new StringCallback() {
                     @Override
+                    public void onBefore(Request request, int id) {
+                        showNetLoading(EmployListActivity.this);
+                    }
+
+                    @Override
                     public void onError(Call call, Exception e, int id) {
                         UIUtils.showTitleTip(EmployListActivity.this,"删除失败 " + e != null?e.getMessage():"NULL");
                     }
@@ -161,6 +176,11 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
                             employAdapter.notifyDataSetChanged();
                             UIUtils.showTitleTip(EmployListActivity.this,"删除成功");
                         }
+                    }
+
+                    @Override
+                    public void onAfter(int id) {
+                        dismissNetLoading();
                     }
                 });
             }
@@ -182,7 +202,7 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
     @Override
     public void itemEditClick(View v, final int postion) {
         //    通过AlertDialog.Builder这个类来实例化我们的一个AlertDialog的对象
-        AlertDialog.Builder builder = new AlertDialog.Builder(EmployListActivity.this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(EmployListActivity.this);
 
         //    设置Title的内容
         builder.setTitle("提示！");
@@ -194,10 +214,11 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-
                 UserBean userBean = employList.get(postion);
-                Intent intent=new Intent(EmployListActivity.this, EditEmployActivity.class);
-                intent.putExtra("faceId",userBean.getFaceId());
+                Log.e(TAG, "onClick: " + userBean.toString());
+                Intent intent=new Intent(EmployListActivity.this, EditInfoActivity.class);
+                intent.putExtra(EditInfoActivity.TYPE_KEY,EditInfoActivity.TYPE_UPDATE);
+                intent.putExtra(EditInfoActivity.USER_KEY,userBean.getFaceId());
                 startActivity(intent);
 
             }
@@ -220,7 +241,9 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_addEmploy:
-                startActivity(new Intent(EmployListActivity.this, AddEmployActivity.class));
+                Intent intent = new Intent(this, EditInfoActivity.class);
+                intent.putExtra(EditInfoActivity.TYPE_KEY,EditInfoActivity.TYPE_ADD);
+                startActivity(intent);
                 break;
             case R.id.btn_sync:
                 SyncManager.instance().initInfo();
@@ -228,6 +251,31 @@ public class EmployListActivity extends BaseActivity implements EmployAdapter.Em
             case R.id.iv_back:
                 finish();
                 break;
+        }
+    }
+
+
+    private static Dialog dialog;
+    public static void showNetLoading(Context context){
+        if(dialog != null){
+            dialog.dismiss();
+            dialog = null;
+        }
+        dialog = new Dialog(context);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        FrameLayout frameLayout = new FrameLayout(context);
+        frameLayout.setBackgroundColor(Color.TRANSPARENT);
+        AVLoadingIndicatorView avLoadingIndicatorView = new AVLoadingIndicatorView(context);
+        avLoadingIndicatorView.setBackgroundColor(Color.TRANSPARENT);
+        frameLayout.addView(avLoadingIndicatorView,new FrameLayout.LayoutParams(300,200, Gravity.CENTER));
+        dialog.setContentView(frameLayout,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+    public static void dismissNetLoading(){
+        if(dialog != null){
+            dialog.dismiss();
         }
     }
 }

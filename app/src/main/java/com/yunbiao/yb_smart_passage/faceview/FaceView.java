@@ -31,7 +31,6 @@ import java.util.Set;
 public class FaceView extends FrameLayout {
     private static final String TAG = "FaceView";
     private FaceCanvasView mFaceCanvasView;
-//    private boolean isPaused = false;
     private byte[] mFaceImage;
     private CacheMap faceCacheMap = new CacheMap();
     private SurfaceView rgbView;
@@ -52,25 +51,6 @@ public class FaceView extends FrameLayout {
         init(context);
     }
 
-    public class TextureVideoViewOutlineProvider extends ViewOutlineProvider {
-        private float mRadius;
-
-        public TextureVideoViewOutlineProvider(float radius) {
-            this.mRadius = radius;
-        }
-
-        @Override
-        public void getOutline(View view, Outline outline) {
-            Rect rect = new Rect();
-            view.getGlobalVisibleRect(rect);
-            int leftMargin = 0;
-            int topMargin = 0;
-            Rect selfRect = new Rect(leftMargin, topMargin,
-                    rect.right - rect.left - leftMargin, rect.bottom - rect.top - topMargin);
-            outline.setRoundRect(selfRect, mRadius);
-        }
-    }
-
     //初始化
     private void init(Context context) {
         int width = SpUtils.getInt(SpUtils.CAMERA_WIDTH);
@@ -82,11 +62,18 @@ public class FaceView extends FrameLayout {
             CameraSettings.setCameraPreviewHeight(height);
         }
 
+        float w = CameraSettings.getCameraPreviewWidth();
+        float h = CameraSettings.getCameraPreviewHeight();
+
+        if(w > h){
+            float ratio = w / h;
+            h = w;
+            w = h * ratio;
+        }
+
         rgbView = new SurfaceView(getContext());
-//        rgbView.setOutlineProvider(new TextureVideoViewOutlineProvider(20));
-//        rgbView.setClipToOutline(true);
         rgbView.getViewTreeObserver().addOnGlobalLayoutListener(onGlobalLayoutListener);
-        addView(rgbView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,Gravity.CENTER));
+        addView(rgbView, new LayoutParams((int)w, (int)h,Gravity.CENTER));
 
         nirView = new SurfaceView(getContext());
         addView(nirView, new LayoutParams(1,1,Gravity.CENTER));
@@ -159,10 +146,6 @@ public class FaceView extends FrameLayout {
     private FaceFrameManager.BasePropertyCallback basePropertyCallback = new FaceFrameManager.BasePropertyCallback() {
         @Override
         public void onBasePropertyResult(Map<Long, BaseProperty> basePropertyMap) {
-//            if (isPaused) {
-//                mFaceCanvasView.clearFaceFrame();
-//                return;
-//            }
             if (basePropertyMap != null && basePropertyMap.values() != null && basePropertyMap.values().size() > 0) {
                 drawFaceBoxes(basePropertyMap);
             } else {
@@ -176,17 +159,11 @@ public class FaceView extends FrameLayout {
     private FaceFrameManager.VerifyResultCallback verifyResultCallback = new FaceFrameManager.VerifyResultCallback() {
         @Override
         public void onDetectPause() {
-//            if (isPaused) {
-//                return;
-//            }
             FaceFrameManager.resumeDetect();
         }
 
         @Override
         public void onVerifyResult(VerifyResult verifyResult) {
-//            if (isPaused) {
-//                return;
-//            }
             updateVerifyResult(verifyResult);
             mFaceImage = verifyResult.getFaceImageBytes();
 
@@ -307,17 +284,14 @@ public class FaceView extends FrameLayout {
     }
 
     public void resume() {
-//        isPaused = false;
         FaceBoxUtil.setPreviewWidth(rgbView.getLeft(),rgbView.getRight(),rgbView.getTop(),rgbView.getBottom());
         FaceSDK.instance().setCallback(basePropertyCallback, facePropertyCallback, verifyResultCallback);
     }
 
     public void pause() {
-//        isPaused = true;
     }
 
     public void destory() {
-//        isPaused = true;
         mFaceCanvasView.clearFaceFrame();
         ExtCameraManager.instance().releaseAllCamera();
     }

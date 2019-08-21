@@ -12,7 +12,6 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.jdjr.risk.face.local.user.FaceUser;
 import com.jdjr.risk.face.local.verify.VerifyResult;
-import com.umeng.commonsdk.debug.D;
 import com.yunbiao.yb_smart_passage.APP;
 import com.yunbiao.yb_smart_passage.Config;
 import com.yunbiao.yb_smart_passage.afinel.Constants;

@@ -24,10 +24,10 @@ import com.yunbiao.yb_smart_passage.activity.Event.AdsUpdateEvent;
 import com.yunbiao.yb_smart_passage.afinel.Constants;
 import com.yunbiao.yb_smart_passage.afinel.ResourceUpdate;
 import com.yunbiao.yb_smart_passage.bean.CompanyBean;
-import com.yunbiao.yb_smart_passage.bean.StaffBean;
+import com.yunbiao.yb_smart_passage.bean.StaffResponse;
 import com.yunbiao.yb_smart_passage.db2.DaoManager;
+import com.yunbiao.yb_smart_passage.db2.DepartBean;
 import com.yunbiao.yb_smart_passage.db2.UserBean;
-import com.yunbiao.yb_smart_passage.db2.VisitorBean;
 import com.yunbiao.yb_smart_passage.faceview.FaceSDK;
 import com.yunbiao.yb_smart_passage.system.HeartBeatClient;
 import com.yunbiao.yb_smart_passage.utils.SpUtils;
@@ -246,7 +246,6 @@ public class SyncManager extends BroadcastReceiver {
 
             @Override
             public void onSucc(final String response, final CompanyBean companyBean) {
-                Log.e(TAG, "onSucc: " + companyBean.toString());
                 int companyId = SpUtils.getInt(SpUtils.COMPANY_ID);
                 String compaName = SpUtils.getStr(SpUtils.COMPANY_NAME);
                 String menuPwd = SpUtils.getStr(SpUtils.MENU_PWD);
@@ -261,9 +260,6 @@ public class SyncManager extends BroadcastReceiver {
                 if (companyId != comid || !TextUtils.equals(compaName, name) || !TextUtils.equals(menuPwd, pwd)) {
                     saveCompanyInfo(comid, name, pwd);
                 }
-
-                //检查logo文件
-                checkLogoFile(logoUrl, logoPath);
 
                 //判断公司是否改变
                 if (isInit || (comid != companyId)) {
@@ -290,9 +286,10 @@ public class SyncManager extends BroadcastReceiver {
             setErrInfo("数据异常");
             return;
         }
+
         final HashMap<String, String> map = new HashMap<>();
         map.put("companyId", comId + "");
-        OkHttpUtils.post().params(map).tag(this).url(ResourceUpdate.GETSTAFF).build().execute(new MyStringCallback<StaffBean>(MyStringCallback.STEP_STAFF) {
+        OkHttpUtils.post().params(map).tag(this).url(ResourceUpdate.GETSTAFF).build().execute(new MyStringCallback<StaffResponse>(MyStringCallback.STEP_STAFF) {
             @Override
             public void onRetryAfter5s() {
                 loadStaff(companyBean);
@@ -303,20 +300,17 @@ public class SyncManager extends BroadcastReceiver {
             }
 
             @Override
-            public void onSucc(String response, StaffBean staffBean) {
-                Log.e(TAG, "onSucc: " + response);
-
-                Log.e(TAG, "onSucc: " + staffBean.toString());
-                syncDao(staffBean);
+            public void onSucc(String response, StaffResponse staffResponse) {
+                syncDao(staffResponse);
             }
         });
     }
 
     //同步数据库
-    private void syncDao(final StaffBean staffBean) {
-        if (staffBean.getStatus() != 1) {
+    private void syncDao(final StaffResponse staffResponse) {
+        if (staffResponse.getStatus() != 1) {
             try {
-                Thread.sleep(2000);
+                Thread.sleep(1500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -331,14 +325,14 @@ public class SyncManager extends BroadcastReceiver {
             @Override
             public void run() {
                 setInfo("正在同步");
-                syncUserDao(staffBean);
+                syncUserDao(staffResponse);
             }
         });
     }
 
-    private void syncUserDao(final StaffBean staffBean) {
-        d("开始同步员工数据");
-        if (staffBean == null) {
+    private void syncUserDao(final StaffResponse staffResponse) {
+        d("******************开始同步**********************");
+        if (staffResponse == null || staffResponse.getDep() == null) {
             d("没有员工数据");
             setInfo("没有员工数据");
             try {
@@ -350,110 +344,42 @@ public class SyncManager extends BroadcastReceiver {
             return;
         }
 
-        List<StaffBean.DepEntry> dep = staffBean.getDep();
-        if (dep == null) {
-            setInfo("没有员工数据");
-            d("没有员工数据");
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            closeNotSave();
-            return;
-        }
+        //更新部门
+        updateDepart(staffResponse.getDep());
 
-        d("检查所有员工");
-        //生成云端数据的所有员工
-        Map<Long, UserBean> remoteDatas = new HashMap<>();
-        for (StaffBean.DepEntry depEntry : dep) {
-            int depId = depEntry.getDepId();
-            String depName = depEntry.getDepName();
-
-            List<UserBean> entry = depEntry.getEntry();
-            if (entry == null) {
-                continue;
-            }
-
-            for (UserBean userBean : entry) {
-                userBean.setDepartId(depId);
-                userBean.setDepartName(depName);
-                String head = userBean.getHead();
-                if (!TextUtils.isEmpty(head)) {
-                    String filepath = Constants.HEAD_PATH + head.substring(head.lastIndexOf("/") + 1);
-                    userBean.setHeadPath(filepath);
-                }
-                remoteDatas.put(userBean.getId(), userBean);
-            }
-        }
+        //获取远程所有员工数据
+        Map<Long, UserBean> remoteDatas = getRemoteAllUser(staffResponse.getDep());
 
         //获取本地数据
         List<UserBean> localDatas = DaoManager.get().queryAll(UserBean.class);
-        int localNumber = localDatas == null ? 0 : localDatas.size();
-        d("数据：云端：" + remoteDatas.size() + "---本地：" + localNumber);
 
-        d("检查删除员工");
-        //检查已删除
-        if (localDatas != null) {
-            for (UserBean localData : localDatas) {
-                long id = localData.getId();
-                //如果远程数据不包含这个id，则本地库删除
-                if (!remoteDatas.containsKey(id)) {
-                    String faceId = localData.getFaceId();
-                    FaceSDK.instance().removeUser(faceId);
-                    DaoManager.get().delete(localData);
-                    d("删除数据：" + id);
-                }
-            }
-        }
+        //对比员工
+        compareUser(localDatas,remoteDatas);
 
-        d("更新员工信息");
-        //先更新信息
-        for (Map.Entry<Long, UserBean> entry : remoteDatas.entrySet()) {
-            UserBean remoteBean = entry.getValue();
-            long l = DaoManager.get().addOrUpdate(remoteBean);
-            d("更新结果：" + l);
-        }
+        //更新库
+        updateUser(remoteDatas);
 
-        d("检查头像数据");
-        Queue<UserBean> updateList = new LinkedList<>();
-        //检查头像
-        localDatas = DaoManager.get().queryAll(UserBean.class);
-        for (UserBean localData : localDatas) {
-            String headPath = localData.getHeadPath();
-            File file = new File(headPath);
-            if(!file.exists()){
-                updateList.add(localData);
-            }
-        }
+        //获取需要更新员工队列
+        Queue<UserBean> updateQueue = getHeadUpdateQueue();
 
-        d("下载头像");
-        setInfo("下载头像");
-        mUpdateTotal = updateList.size();
-        showProgress();
-        downloadHead(updateList, new Runnable() {
+        //开始下载
+        startDownload(updateQueue, new Runnable() {
             @Override
             public void run() {
-                d("下载结束");
-                mCurrDownloadIndex = 0;
 
                 //检查人脸库
                 checkFaceDB(new Runnable() {
                     @Override
                     public void run() {
-                        d("检查员工库结束");
-                        d("\n");
-                        d("\n");
-
                         setInfo("检查访客库");
-                        d("检查访客库");
+                        d("检查访客库----------------------------");
                         //检查访客库
                         VisitorManager.instance().syncVisitor(new Runnable() {
                             @Override
                             public void run() {
                                 d("检查访客库完毕");
 
-                                d("全部结束");
+                                d("******************全部结束**********************");
                                 close();
                             }
                         });
@@ -463,15 +389,118 @@ public class SyncManager extends BroadcastReceiver {
         });
     }
 
-    private void checkFaceDB(Runnable runnable){
-        setInfo("检查人脸库");
-        d("检查人脸库");
+    private void updateDepart(List<DepartBean> dep){
+        d("更新部门数据----------------------------");
+        for (DepartBean departBean : dep) {
+            DaoManager.get().addOrUpdate(departBean);
+        }
 
+        List<DepartBean> departBeans = DaoManager.get().queryAll(DepartBean.class);
+        for (DepartBean departBean : departBeans) {
+            d(departBean.toString());
+        }
+        d("共有部门：" + dep.size() + ",本地："+ departBeans.size());
+    }
+
+    private Map<Long, UserBean> getRemoteAllUser(List<DepartBean> dep){
+        d("检查所有员工----------------------------");
+        //生成云端数据的所有员工
+        Map<Long, UserBean> remoteDatas = new HashMap<>();
+        for (DepartBean bean : dep) {
+            List<UserBean> entry = bean.getEntry();
+            if (entry == null) {
+                continue;
+            }
+            for (UserBean userBean : entry) {
+                userBean.setDepartId(bean.getDepId());
+                userBean.setDepartName(bean.getDepName());
+                String head = userBean.getHead();
+                if (!TextUtils.isEmpty(head)) {
+                    String filepath = Constants.HEAD_PATH + head.substring(head.lastIndexOf("/") + 1);
+                    userBean.setHeadPath(filepath);
+                }
+
+                d(userBean.toString());
+                remoteDatas.put(userBean.getId(), userBean);
+            }
+        }
+        return remoteDatas;
+    }
+
+    private void  compareUser(List<UserBean> localDatas,Map<Long,UserBean> remoteDatas){
+        d("开始数据对比----------------------------");
+        d("本地数据：" +localDatas.size() + ", 远程数据：" + remoteDatas.size() );
+        //检查已删除
+        if (localDatas != null) {
+            for (UserBean localData : localDatas) {
+                long id = localData.getId();
+                //如果远程数据不包含这个id，则本地库删除
+                if (!remoteDatas.containsKey(id)) {
+                    d("准备删除：" + localData.toString());
+                    String headPath = localData.getHeadPath();
+                    if(!TextUtils.isEmpty(headPath)){
+                        boolean delete = new File(headPath).delete();
+                        d("删除头像：" + delete);
+                    }
+                    String faceId = localData.getFaceId();
+                    boolean b = FaceSDK.instance().removeUser(faceId);
+                    d("删除人脸：" + b);
+                    long delete = DaoManager.get().delete(localData);
+                    d("删除数据：" + delete);
+                }
+            }
+        }
+    }
+
+    private void updateUser(Map<Long,UserBean> remoteDatas){
+        d("更新员工信息----------------------------");
+        //先更新信息
+        for (Map.Entry<Long, UserBean> entry : remoteDatas.entrySet()) {
+            UserBean remoteBean = entry.getValue();
+            long l = DaoManager.get().addOrUpdate(remoteBean);
+            d("更新结果：" + l);
+        }
+    }
+
+    private Queue<UserBean> getHeadUpdateQueue(){
+        d("检查头像数据----------------------------");
+        Queue<UserBean> updateList = new LinkedList<>();
+        //检查头像
+        List<UserBean> localDatas = DaoManager.get().queryAll(UserBean.class);
+        for (UserBean localData : localDatas) {
+            String headPath = localData.getHeadPath();
+            File file = new File(headPath);
+            if(!file.exists()){
+                updateList.add(localData);
+            }
+        }
+        for (UserBean userBean : updateList) {
+            d(userBean.toString());
+        }
+        return updateList;
+    }
+
+    private void startDownload(Queue<UserBean> updateQueue, final Runnable runnable){
+        d("下载头像----------------------------");
+        mUpdateTotal = updateQueue.size();
+        showProgress();
+        downloadHead(updateQueue, new Runnable() {
+            @Override
+            public void run() {
+                mCurrDownloadIndex = 0;
+                runnable.run();
+            }
+        });
+    }
+
+
+    private void checkFaceDB(Runnable runnable){
+        d("检查人脸库----------------------------");
+        setInfo("检查人脸库");
         //取出数据库中的数据和人脸库中的数据并做对比
         final List<UserBean> userBeans = DaoManager.get().queryAll(UserBean.class);
         Map<String, FaceUser> allUserMap = FaceSDK.instance().getAllFaceData();
-
-        d("对比人脸库和远程数据：" + userBeans.size() + " : " + allUserMap.size());
+        d("人脸库：" + allUserMap.size() + "，数据库：" + userBeans.size());
 
         if(userBeans == null || userBeans.size()<=0){
             FaceSDK.instance().removeAllUser(new FaceUserManager.FaceUserCallback() {
@@ -482,9 +511,9 @@ public class SyncManager extends BroadcastReceiver {
             });
         } else {
             for (int i = 0; i < userBeans.size(); i++) {
-                UserBean userBean = userBeans.get(i);
+                final UserBean userBean = userBeans.get(i);
                 setTextProgress((i+1) + "/" + userBeans.size());
-                String faceId = userBean.getFaceId();
+                final String faceId = userBean.getFaceId();
                 String headPath = userBean.getHeadPath();
                 if(TextUtils.isEmpty(headPath) || !new File(headPath).exists()){
                     d("头像不存在，跳过：" + userBean.getName());
@@ -499,7 +528,7 @@ public class SyncManager extends BroadcastReceiver {
                         FaceSDK.instance().update(faceUser, new FaceUserManager.FaceUserCallback() {
                             @Override
                             public void onUserResult(boolean b, int i) {
-                                d("更新访客结果：" + b + " —— " + i);
+                                d("更新：" + userBean.getName() + ", FaceId：" +faceId + "，结果：" + b + ","+i);
                             }
                         });
                     }
@@ -507,7 +536,7 @@ public class SyncManager extends BroadcastReceiver {
                     FaceSDK.instance().addUser(faceId, headPath, new FaceUserManager.FaceUserCallback() {
                         @Override
                         public void onUserResult(boolean b, int i) {
-                            d("添加访客结果：" + b + " —— " + i);
+                            d("添加：" + userBean.getName() + ", FaceId：" +faceId + "，结果：" + b + ","+i);
                         }
                     });
                 }
@@ -518,7 +547,6 @@ public class SyncManager extends BroadcastReceiver {
     }
 
     private void downloadHead(final Queue<UserBean> queue, final Runnable runnable) {
-        d("开始下载");
         if (queue == null || queue.size() <= 0) {
             runnable.run();
             return;
@@ -682,7 +710,7 @@ public class SyncManager extends BroadcastReceiver {
                 }
                 o = bean;
             } else {//员工信息
-                StaffBean staffInfo = new Gson().fromJson(response, StaffBean.class);
+                StaffResponse staffInfo = new Gson().fromJson(response, StaffResponse.class);
                 if (staffInfo.getStatus() != 1) {
                     String err = "同步失败，请检查网络或重启设备";
                     switch (staffInfo.getStatus()) {
@@ -866,7 +894,7 @@ public class SyncManager extends BroadcastReceiver {
                                 floatSyncView.dismiss();
                             }
                         }
-                    }, 3 * 1000);
+                    }, 1500);
                 }
             }
         });
