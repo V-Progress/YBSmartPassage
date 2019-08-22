@@ -19,15 +19,17 @@ public class DepartBean {
     protected Long id;
     @Unique
     protected long depId;
+    protected int compId;
     protected String depName;
 
     @Transient
     private List<UserBean> entry;
 
-    @Generated(hash = 1223813775)
-    public DepartBean(Long id, long depId, String depName) {
+    @Generated(hash = 1291365357)
+    public DepartBean(Long id, long depId, int compId, String depName) {
         this.id = id;
         this.depId = depId;
+        this.compId = compId;
         this.depName = depName;
     }
 
@@ -38,10 +40,20 @@ public class DepartBean {
     @Override
     public String toString() {
         return "DepartBean{" +
-                "depId=" + depId +
+                "id=" + id +
+                ", depId=" + depId +
+                ", compId=" + compId +
                 ", depName='" + depName + '\'' +
                 ", entry=" + entry +
                 '}';
+    }
+
+    public int getCompId() {
+        return compId;
+    }
+
+    public void setCompId(int compId) {
+        this.compId = compId;
     }
 
     public List<UserBean> getEntry() {

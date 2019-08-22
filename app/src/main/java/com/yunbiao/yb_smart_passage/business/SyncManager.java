@@ -371,6 +371,9 @@ public class SyncManager extends BroadcastReceiver {
                 checkFaceDB(new Runnable() {
                     @Override
                     public void run() {
+
+                        EventBus.getDefault().postSticky(new EmployListActivity.EmployUpdate());
+
                         setInfo("检查访客库");
                         d("检查访客库----------------------------");
                         //检查访客库
@@ -390,8 +393,10 @@ public class SyncManager extends BroadcastReceiver {
     }
 
     private void updateDepart(List<DepartBean> dep){
+        int companyId = SpUtils.getInt(SpUtils.COMPANY_ID);
         d("更新部门数据----------------------------");
         for (DepartBean departBean : dep) {
+            departBean.setCompId(companyId);
             DaoManager.get().addOrUpdate(departBean);
         }
 

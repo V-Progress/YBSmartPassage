@@ -75,17 +75,15 @@
         <activity
             android:name=".activity.WelComeActivity"
             android:launchMode="singleTask" />
-        <activity android:name=".activity.AddEmployActivity" />
         <activity android:name=".activity.EmployListActivity" />
-        <activity android:name=".activity.EditEmployActivity" />
         <activity android:name=".activity.SignActivity" /> <!-- 开机自动重启 -->
         <activity android:name=".activity.SystemActivity" />
         <activity android:name=".activity.IntroduceActivity" />
         <activity android:name=".activity.VisitorActivity" />
-        <activity
-            android:name="com.tencent.bugly.beta.ui.BetaActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize|locale"
-            android:theme="@android:style/Theme.Translucent" />
+        <!--<activity-->
+            <!--android:name="com.tencent.bugly.beta.ui.BetaActivity"-->
+            <!--android:configChanges="keyboardHidden|orientation|screenSize|locale"-->
+            <!--android:theme="@android:style/Theme.Translucent" />-->
         <activity
             android:name=".xmpp.NotificationDetailsActivity"
             android:label="Notification Details" />

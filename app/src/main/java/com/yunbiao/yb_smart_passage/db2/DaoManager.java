@@ -92,6 +92,14 @@ public class DaoManager {
         return daoSession.getUserBeanDao().queryBuilder().where(UserBeanDao.Properties.FaceId.eq(faceId)).list();
     }
 
+    public List<DepartBean> queryDepartByCompId(int compId) {
+        if(daoSession == null){
+            return null;
+        }
+        return daoSession.getDepartBeanDao().queryBuilder().where(DepartBeanDao.Properties.CompId.eq(compId)).list();
+
+    }
+
     public List<PassageBean> queryPassageByFaceId(String faceId){
         if(daoSession == null){
             return null;

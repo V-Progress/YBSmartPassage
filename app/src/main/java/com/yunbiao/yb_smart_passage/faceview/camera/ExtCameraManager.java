@@ -12,6 +12,8 @@ import com.yunbiao.yb_smart_passage.faceview.rect.FrameHelper;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ExtCameraManager {
     private static final String TAG = "ExtCameraManager";
@@ -20,9 +22,14 @@ public class ExtCameraManager {
 
     private static ExtCameraManager surfaceCameraManager = new ExtCameraManager();
     private List<Camera.Size> supportedPreviewSizes;
+    private final ExecutorService executorService;
 
     public static ExtCameraManager instance(){
         return surfaceCameraManager;
+    }
+
+    private ExtCameraManager(){
+        executorService = Executors.newFixedThreadPool(2);
     }
 
 //    public void init(TextureView rgbTexture, TextureView nirTexture){
@@ -111,12 +118,17 @@ public class ExtCameraManager {
 
     private SurfaceHolder.Callback rgbCallback = new SurfaceHolder.Callback() {
         @Override
-        public void surfaceCreated(SurfaceHolder holder) {
+        public void surfaceCreated(final SurfaceHolder holder) {
             if(mListener != null){
                 mListener.onSurfaceReady();
             }
             releaseRGBCamera();
-            mRGBCamera = doOpenCamera(CameraType.getNIR(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),holder,mRGBCallback);
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    mRGBCamera = doOpenCamera(CameraType.getNIR(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),holder,mRGBCallback);
+                }
+            });
         }
 
         @Override
@@ -131,9 +143,14 @@ public class ExtCameraManager {
 
     private SurfaceHolder.Callback nirCallback = new SurfaceHolder.Callback() {
         @Override
-        public void surfaceCreated(SurfaceHolder holder) {
+        public void surfaceCreated(final SurfaceHolder holder) {
             releaseNIRCamera();
-            mNIRCamera = doOpenCamera(CameraType.getRGB(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),holder,mNIRCallback);
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    mNIRCamera = doOpenCamera(CameraType.getRGB(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),holder,mNIRCallback);
+                }
+            });
         }
 
         @Override
@@ -147,7 +164,7 @@ public class ExtCameraManager {
         }
     };
 
-    private Camera doOpenCamera(int cameraType, int cameraPreviewWidth, int cameraPreviewHeight, SurfaceHolder holder , Camera.PreviewCallback previewCallback){
+    private synchronized Camera doOpenCamera(int cameraType, int cameraPreviewWidth, int cameraPreviewHeight, SurfaceHolder holder , Camera.PreviewCallback previewCallback){
         try{
             Camera camera = Camera.open(cameraType);
             camera.setDisplayOrientation(CameraSettings.getCameraDisplayRotation());
