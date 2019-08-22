@@ -16,7 +16,6 @@
     <string name="System_Service_offline">离线</string>
 
     <!--人员管理-->
-    <string name="employ_list_title">员工列表</string>
     <string name="employ_list_depart_sync">同步</string>
     <string name="employ_list_field_index">序号</string>
     <string name="employ_list_field_number">员工编号</string>
@@ -26,25 +25,13 @@
 
     <!--新增员工-->
 
-    <string name="employ_add_title">增加员工</string>
-    <string name="employ_add_info">基本信息</string>
-    <string name="employ_add_takephoto">拍照</string>
-    <string name="employ_add_retry">重置</string>
-    <string name="employ_add_name">姓名:</string>
-    <string name="employ_add_number">员工编号:</string>
-    <string name="employ_add_job">职位:</string>
     <string name="employ_add_confirm">确定</string>
     <string name="employ_add_cancel">取消</string>
 
     <!--离线数据-->
-    <string name="sign_list_title">人员签到统计</string>
     <string name="sign_list_filed_index">编号</string>
-    <string name="sign_list_filed_time">时间</string>
-    <string name="sign_list_filed_name">员工名</string>
-    <string name="sign_list_filed_job">部门</string>
     <string name="sign_list_filed_head">头像</string>
 
     <!--设置-->
 
-    <string name="main_air_no_data">暂无数据</string>
 </resources>

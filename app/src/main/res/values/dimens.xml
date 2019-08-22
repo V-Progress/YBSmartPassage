@@ -1,7 +1,6 @@
 <resources>
 
     <!-- 字间距 -->
-    <dimen name="paddingleft_addemploy">10dp</dimen>
 
     <!-- 字体定义 -->
 
