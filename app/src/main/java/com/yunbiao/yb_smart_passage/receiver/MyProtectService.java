@@ -17,10 +17,10 @@ public class MyProtectService extends Service {
     private static final String TAG = "MyProtectService";
 
     //看门狗service
-    private String packageName = "com.yunbiao.ybsmartcheckin_live_id";
-    private String packageClassName = "com.yunbiao.ybsmartcheckin_live_id.SplashActivity";
+    private String packageName = "com.yunbiao.yb_smart_passage";
+    private String packageClassName = "com.yunbiao.yb_smart_passage.SplashActivity";
 
-    private final static int DELAY_TIME = 60 * 1000;//15s轮询一次
+    private final static int DELAY_TIME = 15 * 1000;//15s轮询一次
     private final static int CHECK_APP = 0x3211;
 
     @Override

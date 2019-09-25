@@ -89,7 +89,7 @@ public class PassageManager {
         threadPool.execute(initRunnable);
 
         autoUploadThread = Executors.newSingleThreadScheduledExecutor();
-        autoUploadThread.scheduleAtFixedRate(autoUploadRunnable, 5, UPDATE_TIME, TimeUnit.MINUTES);
+        autoUploadThread.scheduleAtFixedRate(autoUploadRunnable, 5, 600, TimeUnit.SECONDS);
     }
 
     //初始化线程
@@ -115,7 +115,6 @@ public class PassageManager {
         }
     };
 
-
     //定时发送签到数据
     private Runnable autoUploadRunnable = new Runnable() {
         @Override
@@ -129,9 +128,10 @@ public class PassageManager {
 
             final List<PassageBean> passList = DaoManager.get().queryByPassUpload(false);
             if (passList == null) {
+                Log.e(TAG, "run: ------1 未上传：" + passList.size());
                 return;
             }
-            Log.e(TAG, "run: ------ 未上传：" + passList.size());
+            Log.e(TAG, "run: ------2 未上传：" + passList.size());
 
             if (passList.size() <= 0) {
                 return;
@@ -146,10 +146,10 @@ public class PassageManager {
             List<SignDataBean> signDataBeans = new ArrayList<>();
             for (PassageBean passageBean : passList) {
                 SignDataBean signDataBean = new SignDataBean();
-                signDataBean.entryId = passageBean.getId();
+                signDataBean.entryId = passageBean.getEntryId();
                 signDataBean.createTime = passageBean.getPassTime();
                 signDataBean.similar = passageBean.getSimilar();
-                signDataBean.card = passageBean.getCard();
+                signDataBean.card = TextUtils.isEmpty(passageBean.getCard()) ? "" : passageBean.getCard() ;
                 signDataBean.isPass = passageBean.getIsPass();
                 signDataBeans.add(signDataBean);
 
@@ -175,7 +175,12 @@ public class PassageManager {
             String jsonStr = new Gson().toJson(signDataBeans);
             params.put("witJson",jsonStr);
 
+            d("记录条数：" + signDataBeans.size());
+            d("文件数量：" + fileMap.size());
+
             d("参数... " + params.toString());
+            d("参数... " + fileMap.toString());
+
             OkHttpUtils.post()
                     .url(ResourceUpdate.SIGNARRAY)
                     .params(params)
@@ -290,6 +295,7 @@ public class PassageManager {
         }
 
         UserBean userBean = UserBeans.get(0);
+        Log.e(TAG, "checkUser: ---- " + userBean.toString());
         passageBean.setEntryId(userBean.getId());
         passageBean.setSex(userBean.getSex());
         passageBean.setName(userBean.getName());
@@ -395,7 +401,7 @@ public class PassageManager {
 
         String url;
         if(passageBean.getUserType() != -1){
-            params.put("entryId", passageBean.getId()+"");
+            params.put("entryId", passageBean.getEntryId()+"");
             params.put("similar", passageBean.getSimilar()+"");
             params.put("card", passageBean.getCard()+"");
             params.put("isPass", passageBean.getIsPass()+"");
@@ -459,12 +465,11 @@ public class PassageManager {
     }
 
     class SignDataBean {
-        public int isPass;
         long entryId;
-        long createTime;
-        int stat;
-        String similar;
+        public int isPass;
         String card;
+        String similar;
+        long createTime;
     }
 
     private void d(@NonNull String msg) {

@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class ExtCameraManager {
     private static final String TAG = "ExtCameraManager";
@@ -22,14 +24,14 @@ public class ExtCameraManager {
 
     private static ExtCameraManager surfaceCameraManager = new ExtCameraManager();
     private List<Camera.Size> supportedPreviewSizes;
-    private final ExecutorService executorService;
+    private final ScheduledExecutorService executor;
 
     public static ExtCameraManager instance(){
         return surfaceCameraManager;
     }
 
     private ExtCameraManager(){
-        executorService = Executors.newFixedThreadPool(2);
+        executor = Executors.newSingleThreadScheduledExecutor();
     }
 
 //    public void init(TextureView rgbTexture, TextureView nirTexture){
@@ -109,12 +111,16 @@ public class ExtCameraManager {
      */
     public void init(SurfaceView rgbSurface, SurfaceView nirSurface){
         rgbSurface.getHolder().addCallback(rgbCallback);
-        nirSurface.getHolder().addCallback(nirCallback);
+//        nirSurface.getHolder().addCallback(nirCallback);
     }
 
 //    public void init(SurfaceView rgbSurface){
 //        rgbSurface.getHolder().addCallback(rgbCallback);
 //    }
+
+    private void delayRun(Runnable runnable){
+        executor.schedule(runnable,300, TimeUnit.MILLISECONDS);
+    }
 
     private SurfaceHolder.Callback rgbCallback = new SurfaceHolder.Callback() {
         @Override
@@ -123,10 +129,10 @@ public class ExtCameraManager {
                 mListener.onSurfaceReady();
             }
             releaseRGBCamera();
-            executorService.execute(new Runnable() {
+            delayRun(new Runnable() {
                 @Override
                 public void run() {
-                    mRGBCamera = doOpenCamera(CameraType.getNIR(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),holder,mRGBCallback);
+                    mRGBCamera = doOpenCamera(CameraType.getRGB(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),holder,mRGBCallback);
                 }
             });
         }
@@ -145,10 +151,10 @@ public class ExtCameraManager {
         @Override
         public void surfaceCreated(final SurfaceHolder holder) {
             releaseNIRCamera();
-            executorService.execute(new Runnable() {
+            delayRun(new Runnable() {
                 @Override
                 public void run() {
-                    mNIRCamera = doOpenCamera(CameraType.getRGB(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),holder,mNIRCallback);
+                    mNIRCamera = doOpenCamera(CameraType.getNIR(),CameraSettings.getCameraPreviewWidth(),CameraSettings.getCameraPreviewHeight(),holder,mNIRCallback);
                 }
             });
         }
@@ -210,27 +216,27 @@ public class ExtCameraManager {
     private Camera.PreviewCallback mRGBCallback = new Camera.PreviewCallback() {
         @Override
         public void onPreviewFrame(final byte[] data, final Camera camera) {
-            final byte[] frameCopy = Arrays.copyOf(data, data.length);
+//            final byte[] frameCopy = Arrays.copyOf(data, data.length);
 
             if (camera != null) {
                 camera.addCallbackBuffer(data);
             }
-            final byte[] frameRotateRGB = FrameHelper.getFrameRotate(frameCopy, CameraSettings.getCameraPreviewWidth(), CameraSettings.getCameraPreviewHeight());
+            final byte[] frameRotateRGB = FrameHelper.getFrameRotate(data, CameraSettings.getCameraPreviewWidth(), CameraSettings.getCameraPreviewHeight());
             FaceFrameManager.handleCameraFrame(frameRotateRGB, mLastFrameNIR, CameraSettings.getCameraWidth(), CameraSettings.getCameraHeight());
         }
     };
 
-    private byte[] mLastFrameNIR;
+    private byte[] mLastFrameNIR = null;
 
     private Camera.PreviewCallback mNIRCallback = new Camera.PreviewCallback() {
 
         @Override
         public void onPreviewFrame(byte[] data, Camera camera) {
-            final byte[] copy = Arrays.copyOf(data, data.length);
+//            final byte[] copy = Arrays.copyOf(data, data.length);
             if (camera != null) {
                 camera.addCallbackBuffer(data);
             }
-            final byte[] frameRotate = FrameHelper.getFrameRotate(copy, CameraSettings.getCameraWidth(), CameraSettings.getCameraHeight());
+            final byte[] frameRotate = FrameHelper.getFrameRotate(data, CameraSettings.getCameraWidth(), CameraSettings.getCameraHeight());
             mLastFrameNIR = frameRotate;
         }
     };
@@ -251,6 +257,7 @@ public class ExtCameraManager {
             e.printStackTrace();
         }
     }
+
     public void releaseNIRCamera(){
         try {
             if (mNIRCamera != null) {

@@ -51,13 +51,17 @@ public class Constants {
          * 本地开发环境
          */
         //主机地址
-        String DEV_URL = "192.168.1.54";
-        //XMPP端口
-        String DEV_XMPP_PORT = "5222";
-        //数据端口
-        String DEV_RES_PORT = "8088";
-        //项目名
-        String DEV_SUFFIX = "/ybface/";
+        String DEV_URL = "47.105.80.245";//正式
+        String DEV_RES_PORT = "8080";//数据端口
+        String DEV_SUFFIX = "/";//项目名
+        String DEV_XMPP_PORT = "5222";//XMPP端口
+
+
+//        String DEV_URL = "192.168.1.54";//张继桃
+//        String DEV_URL = "192.168.1.45";//曾辉
+//        String DEV_XMPP_PORT = "5222";
+//        String DEV_RES_PORT = "8082";//曾辉
+//        String DEV_SUFFIX = "/ybface/";
     }
 }
 

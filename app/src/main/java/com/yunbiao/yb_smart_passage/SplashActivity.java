@@ -54,7 +54,7 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void initData() {
         //开启看门狗,只会在开机是启动一次
-        startService(new Intent(this, MyProtectService.class));
+        APP.bindProtectService();
 
         Config.deviceType = CommonUtils.getBroadType();
         ybPermission = new YBPermission(new YBPermission.PermissionListener(){

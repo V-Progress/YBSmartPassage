@@ -17,6 +17,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class SystemActivity extends BaseActivity implements View.OnClickListener {
 
     private Button btn_depart_system;
@@ -103,10 +107,17 @@ public class SystemActivity extends BaseActivity implements View.OnClickListener
         }
 
         String expDate = SpUtils.getStr(SpUtils.EXP_DATE);
-        tv_exp_system.setText(TextUtils.isEmpty(expDate) ? "无限期" : expDate);
+        if(TextUtils.isEmpty(expDate)){
+            expDate = "无限期";
+        } else{
+            expDate = dateFormat.format(new Date(Long.parseLong(expDate)));
+        }
+        tv_exp_system.setText(expDate);
 
         tv_online_system.setText(CoreInfoHandler.isOnline ? "在线" : "离线");
     }
+
+    private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     @Override
     public void onClick(View v) {

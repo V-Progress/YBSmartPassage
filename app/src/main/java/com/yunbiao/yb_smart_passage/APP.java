@@ -2,6 +2,7 @@ package com.yunbiao.yb_smart_passage;
 
 import android.app.Application;
 import android.app.smdt.SmdtManager;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -13,6 +14,7 @@ import com.yunbiao.yb_smart_passage.afinel.Constants;
 import com.yunbiao.yb_smart_passage.business.Speecher;
 import com.yunbiao.yb_smart_passage.db2.DaoManager;
 import com.yunbiao.yb_smart_passage.exception.CrashHandler2;
+import com.yunbiao.yb_smart_passage.receiver.MyProtectService;
 import com.yunbiao.yb_smart_passage.utils.RestartAPPTool;
 import com.yunbiao.yb_smart_passage.utils.SpUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -98,11 +100,11 @@ public class APP extends Application {
             return;
         }
 
-        try{
-            xhApiManager = new XHApiManager();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+//        try{
+//            xhApiManager = new XHApiManager();
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
 
     }
 
@@ -283,7 +285,19 @@ public class APP extends Application {
     }
 
     public static void exit() {
+        unbindProtectService();
         //关闭整个应用
         System.exit(0);
     }
+
+    public static void bindProtectService(){
+        Log.e(TAG, "bindProtectService: 绑定守护进程");
+        //开启看门狗,只会在开机是启动一次
+        getContext().startService(new Intent(APP.getContext(), MyProtectService.class));
+    }
+
+    public static void unbindProtectService(){
+        getContext().stopService(new Intent(APP.getContext(), MyProtectService.class));
+    }
+
 }
