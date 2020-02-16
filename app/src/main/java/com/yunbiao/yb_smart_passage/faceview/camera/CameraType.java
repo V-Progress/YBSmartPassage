@@ -10,6 +10,8 @@ import android.util.Log;
 public class CameraType {
     private static int RGB = 0;
     private static int NIR = 1;
+//    private static int RGB = 1;
+//    private static int NIR = 0;
 
 
     public static int getRGB() {

@@ -3,6 +3,7 @@ package com.yunbiao.yb_smart_passage;
 import android.app.Application;
 import android.app.smdt.SmdtManager;
 import android.content.Intent;
+import android.os.ServiceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -100,11 +101,11 @@ public class APP extends Application {
             return;
         }
 
-//        try{
-//            xhApiManager = new XHApiManager();
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
+        try{
+            xhApiManager = new XHApiManager();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 

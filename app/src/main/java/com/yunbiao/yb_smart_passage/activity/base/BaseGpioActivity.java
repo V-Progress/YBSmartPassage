@@ -3,6 +3,7 @@ package com.yunbiao.yb_smart_passage.activity.base;
 import android.app.smdt.SmdtManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 
 import com.android.xhapimanager.XHApiManager;
 import com.yunbiao.yb_smart_passage.APP;
@@ -17,9 +18,22 @@ import org.greenrobot.eventbus.ThreadMode;
 
 public abstract class BaseGpioActivity extends BaseActivity {
     private boolean isAlwayOpen = false;//常开
-    private Handler timeHanlder = new Handler();
+    private Handler checkHandler = new Handler();
+    private Handler timeHanlder = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 0) {
+                if(isAlwayOpen){
+                    return;
+                }
+                offGate();
+            } else if(msg.what == 1){
+                offLight();
+            }
+        }
+    };
     private SmdtManager smdt;
-    private int CLOSE_DELAY = 8;
+    private int CLOSE_DELAY = 3;
     private XHApiManager xhApi;
 
     @Override
@@ -135,16 +149,20 @@ public abstract class BaseGpioActivity extends BaseActivity {
      * 开始执行自动门禁
      */
     protected void startAutoGate(){
-        timeHanlder.removeCallbacks(gateControlRunnable);
-        timeHanlder.postDelayed(gateControlRunnable,CLOSE_DELAY * 1000);
+        timeHanlder.removeMessages(0);
+        timeHanlder.sendEmptyMessageDelayed(0,CLOSE_DELAY * 1000);
+//        timeHanlder.removeCallbacks(gateControlRunnable);
+//        timeHanlder.postDelayed(gateControlRunnable,CLOSE_DELAY * 1000);
     }
 
     /***
      * 开始执行自动灯光
      */
     protected void startAutoLight(){
-        timeHanlder.removeCallbacks(lightControlRunnable);
-        timeHanlder.postDelayed(lightControlRunnable,CLOSE_DELAY * 1000);
+        timeHanlder.removeMessages(1);
+        timeHanlder.sendEmptyMessageDelayed(1,CLOSE_DELAY * 1000);
+//        timeHanlder.removeCallbacks(lightControlRunnable);
+//        timeHanlder.postDelayed(lightControlRunnable,CLOSE_DELAY * 1000);
     }
 
     /***
@@ -152,8 +170,8 @@ public abstract class BaseGpioActivity extends BaseActivity {
      * @param time
      */
     private void startAutoCheck(long time){
-        timeHanlder.removeCallbacks(checkRunnable);
-        timeHanlder.postDelayed(checkRunnable,time);
+        checkHandler.removeCallbacks(checkRunnable);
+        checkHandler.postDelayed(checkRunnable,time);
     }
 
     //常开状态监测
@@ -168,7 +186,7 @@ public abstract class BaseGpioActivity extends BaseActivity {
     };
 
     //灯光控制
-    private Runnable lightControlRunnable = new Runnable() {
+    /*private Runnable lightControlRunnable = new Runnable() {
         @Override
         public void run() {
             offLight();
@@ -184,7 +202,7 @@ public abstract class BaseGpioActivity extends BaseActivity {
             }
             offGate();
         }
-    };
+    };*/
 
     @Override
     protected void onDestroy() {

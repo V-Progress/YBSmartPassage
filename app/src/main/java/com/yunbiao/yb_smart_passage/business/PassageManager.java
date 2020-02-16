@@ -449,7 +449,7 @@ public class PassageManager {
     }
 
     private boolean canPass(PassageBean passageBean) {
-        String faceId = passageBean.getFaceId();
+        /*String faceId = passageBean.getFaceId();
         if (!passageMap.containsKey(faceId)) {
             passageMap.put(faceId, passageBean.getPassTime());
             return true;
@@ -461,7 +461,8 @@ public class PassageManager {
         if (isCanPass) {
             passageMap.put(faceId, currTime);
         }
-        return isCanPass;
+        return isCanPass;*/
+        return true;
     }
 
     class SignDataBean {

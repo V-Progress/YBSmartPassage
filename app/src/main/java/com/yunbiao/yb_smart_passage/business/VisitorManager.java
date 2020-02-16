@@ -43,7 +43,7 @@ public class VisitorManager {
 
     private VisitorManager() {
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.schedule(autoSyncRunnable,5,TimeUnit.MINUTES);
+        scheduledExecutorService.schedule(autoSyncRunnable, 5, TimeUnit.MINUTES);
     }
 
     private Runnable autoSyncRunnable = new Runnable() {
@@ -52,99 +52,94 @@ public class VisitorManager {
             syncVisitor(new Runnable() {
                 @Override
                 public void run() {
-                    scheduledExecutorService.schedule(autoSyncRunnable,10,TimeUnit.MINUTES);
+                    scheduledExecutorService.schedule(autoSyncRunnable, 10, TimeUnit.MINUTES);
                 }
             });
         }
     };
 
     public synchronized void syncVisitor(final Runnable finishRunnable) {
-        scheduledExecutorService.execute(new Runnable() {
+        OkHttpUtils.post()
+                .url(ResourceUpdate.GET_VISITOR)
+                .addParams("deviceNo", HeartBeatClient.getDeviceNo())
+                .build().execute(new StringCallback() {
             @Override
-            public void run() {
-                OkHttpUtils.post()
-                        .url(ResourceUpdate.GET_VISITOR)
-                        .addParams("deviceNo", HeartBeatClient.getDeviceNo())
-                        .build().execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        Log.e(TAG, "onError: " + (e == null ? "NULL" : e.getMessage()));
-                        finishRunnable.run();
+            public void onError(Call call, Exception e, int id) {
+                Log.e(TAG, "onError: " + (e == null ? "NULL" : e.getMessage()));
+                finishRunnable.run();
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Log.e(TAG, "onResponse: " + response);
+
+                if (TextUtils.isEmpty(response)) {
+                    finishRunnable.run();
+                    return;
+                }
+
+                VisitorResponse visitorResponse = new Gson().fromJson(response, VisitorResponse.class);
+                if (visitorResponse.getStatus() != 1) {
+                    finishRunnable.run();
+                    return;
+                }
+
+                d("生成远程数据");
+                Map<Long, VisitorBean> remoteDatas = new HashMap<>();
+                List<VisitorBean> visitor = visitorResponse.getVisitor();
+                for (VisitorBean visitorBean : visitor) {
+                    remoteDatas.put(visitorBean.getId(), visitorBean);
+                }
+
+                //获取本地数据
+                List<VisitorBean> localDatas = DaoManager.get().queryAll(VisitorBean.class);
+                int localNumber = localDatas == null ? 0 : localDatas.size();
+
+                d("检查已删除数据");
+                if (localDatas != null) {
+                    for (VisitorBean localData : localDatas) {
+                        long id1 = localData.getId();
+                        if (!remoteDatas.containsKey(id1)) {
+                            FaceSDK.instance().removeUser(String.valueOf(id1));
+                            DaoManager.get().delete(localData);
+                            d("删除数据：" + localData.getName());
+                        }
                     }
+                }
 
+                d("更新访客信息");
+                for (Map.Entry<Long, VisitorBean> entry : remoteDatas.entrySet()) {
+                    VisitorBean value = entry.getValue();
+                    value.setFaceId(value.getFaceId());
+                    String head = value.getHead();
+                    String filepath = Constants.HEAD_PATH + head.substring(head.lastIndexOf("/") + 1);
+                    value.setHeadPath(filepath);
+                    long l = DaoManager.get().addOrUpdate(value);
+                    d("更新数据结果：" + l);
+                }
+
+                List<VisitorBean> visitorBeans = DaoManager.get().queryAll(VisitorBean.class);
+                for (VisitorBean visitorBean : visitorBeans) {
+                    Log.e(TAG, "onResponse: ----- " + visitorBean.toString());
+                }
+
+                d("检查头像");
+                Queue<VisitorBean> updateList = new LinkedList<>();
+                //检查头像
+                localDatas = DaoManager.get().queryAll(VisitorBean.class);
+                for (VisitorBean localData : localDatas) {
+                    String headPath = localData.getHeadPath();
+                    File file = new File(headPath);
+                    if (!file.exists()) {
+                        updateList.add(localData);
+                    }
+                }
+
+                d("下载头像");
+                downloadHead(updateList, new Runnable() {
                     @Override
-                    public void onResponse(String response, int id) {
-                        Log.e(TAG, "onResponse: " + response);
-
-                        if (TextUtils.isEmpty(response)) {
-                            finishRunnable.run();
-                            return;
-                        }
-
-                        VisitorResponse visitorResponse = new Gson().fromJson(response, VisitorResponse.class);
-                        if (visitorResponse.getStatus() != 1) {
-                            finishRunnable.run();
-                            return;
-                        }
-
-                        d("生成远程数据");
-                        Map<Long, VisitorBean> remoteDatas = new HashMap<>();
-                        List<VisitorBean> visitor = visitorResponse.getVisitor();
-                        for (VisitorBean visitorBean : visitor) {
-                            remoteDatas.put(visitorBean.getId(), visitorBean);
-                        }
-
-                        //获取本地数据
-                        List<VisitorBean> localDatas = DaoManager.get().queryAll(VisitorBean.class);
-                        int localNumber = localDatas == null ? 0 : localDatas.size();
-
-                        d("检查已删除数据");
-                        if (localDatas != null) {
-                            for (VisitorBean localData : localDatas) {
-                                long id1 = localData.getId();
-                                if (!remoteDatas.containsKey(id1)) {
-                                    FaceSDK.instance().removeUser(String.valueOf(id1));
-                                    DaoManager.get().delete(localData);
-                                    d("删除数据：" + localData.getName());
-                                }
-                            }
-                        }
-
-                        d("更新访客信息");
-                        for (Map.Entry<Long, VisitorBean> entry : remoteDatas.entrySet()) {
-                            VisitorBean value = entry.getValue();
-                            value.setFaceId(value.getFaceId());
-                            String head = value.getHead();
-                            String filepath = Constants.HEAD_PATH + head.substring(head.lastIndexOf("/") + 1);
-                            value.setHeadPath(filepath);
-                            long l = DaoManager.get().addOrUpdate(value);
-                            d("更新数据结果：" + l);
-                        }
-
-                        List<VisitorBean> visitorBeans = DaoManager.get().queryAll(VisitorBean.class);
-                        for (VisitorBean visitorBean : visitorBeans) {
-                            Log.e(TAG, "onResponse: ----- " + visitorBean.toString());
-                        }
-
-                        d("检查头像");
-                        Queue<VisitorBean> updateList = new LinkedList<>();
-                        //检查头像
-                        localDatas = DaoManager.get().queryAll(VisitorBean.class);
-                        for (VisitorBean localData : localDatas) {
-                            String headPath = localData.getHeadPath();
-                            File file = new File(headPath);
-                            if (!file.exists()) {
-                                updateList.add(localData);
-                            }
-                        }
-
-                        d("下载头像");
-                        downloadHead(updateList, new Runnable() {
-                            @Override
-                            public void run() {
-                                checkFaceDB(finishRunnable);
-                            }
-                        });
+                    public void run() {
+                        checkFaceDB(finishRunnable);
                     }
                 });
             }
@@ -157,12 +152,12 @@ public class VisitorManager {
         Map<String, FaceUser> allFaceData = FaceSDK.instance().getAllFaceData();
 
         d("对比数据：" + visitorBeans.size() + " : " + allFaceData.size());
-        if(visitorBeans != null){
+        if (visitorBeans != null) {
             //循环检查库中是否有该访客
             for (VisitorBean visitorBean : visitorBeans) {
                 String faceId = visitorBean.getFaceId();
                 String headPath = visitorBean.getHeadPath();
-                if(TextUtils.isEmpty(headPath) || !new File(headPath).exists()){
+                if (TextUtils.isEmpty(headPath) || !new File(headPath).exists()) {
                     d("头像不存在，跳过：" + visitorBean.getName());
                     continue;
                 }
